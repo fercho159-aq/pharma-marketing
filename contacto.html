@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Contacto | OHM Pharma</title>
+<meta name="description" content="Contáctanos por WhatsApp, teléfono o formulario. Av. Tláhuac 2772, Santa Ana Poniente, CDMX. Respondemos en minutos.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/styles.css">
+</head>
+<body data-section="contacto">
+
+<div id="site-header"></div>
+
+<!-- Page header -->
+<section class="page-header">
+  <div class="container">
+    <div class="breadcrumbs"><a href="index.html">Inicio</a> / <span>Contacto</span></div>
+    <h1>Estamos a un mensaje de distancia</h1>
+    <p>WhatsApp, teléfono, formulario o visítanos en persona. Lo que más te acomode, te atendemos como mereces.</p>
+  </div>
+</section>
+
+<!-- Quick actions -->
+<section style="padding:40px 0">
+  <div class="container">
+    <div style="display:grid;gap:16px;grid-template-columns:1fr" class="quick-actions">
+      <a href="https://wa.me/5215575538801?text=Hola%2C%20necesito%20ayuda" target="_blank" class="division-card" style="text-align:center;color:var(--ink);border:0;background:linear-gradient(135deg,#25D366,#128C7E);color:#fff">
+        <div class="icon-lg" style="background:rgba(255,255,255,0.18);color:#fff">💬</div>
+        <h3 style="color:#fff">WhatsApp</h3>
+        <p style="color:rgba(255,255,255,0.85)">Respuesta en menos de 2 minutos</p>
+        <div class="cta-row"><span class="btn btn-ghost" style="background:#fff;color:#128C7E;border:0">Abrir chat →</span></div>
+      </a>
+      <a href="tel:+5215575538801" class="division-card" style="text-align:center">
+        <div class="icon-lg">📞</div>
+        <h3>Teléfono</h3>
+        <p>Lun-Vie 9:00-18:00 · Sáb 10:00-14:00</p>
+        <div class="cta-row"><span class="btn btn-primary">+52 55 7553 8801</span></div>
+      </a>
+      <a href="#form" class="division-card" style="text-align:center">
+        <div class="icon-lg">✉️</div>
+        <h3>Formulario</h3>
+        <p>Respondemos por correo en menos de 24 hrs</p>
+        <div class="cta-row"><span class="btn btn-outline">Escribir →</span></div>
+      </a>
+    </div>
+    <style>@media(min-width:780px){.quick-actions{grid-template-columns:repeat(3,1fr) !important}}</style>
+  </div>
+</section>
+
+<!-- Form + Info -->
+<section id="form" style="padding-top:20px">
+  <div class="container">
+    <div class="contact-layout">
+
+      <div class="contact-card">
+        <h3 style="margin-top:0">Envíanos un mensaje</h3>
+        <p class="muted" style="font-size:.9rem">Cuéntanos cómo podemos ayudarte y te respondemos en menos de 24 hrs hábiles.</p>
+        <form onsubmit="event.preventDefault(); toast('¡Mensaje enviado! Te contactaremos pronto.'); this.reset();">
+          <div class="form-row">
+            <div class="form-group"><label>Nombre</label><input required name="name" placeholder="Tu nombre"></div>
+            <div class="form-group"><label>Teléfono</label><input required type="tel" name="phone" placeholder="55 1234 5678"></div>
+          </div>
+          <div class="form-group"><label>Email</label><input required type="email" name="email" placeholder="tu@correo.com"></div>
+          <div class="form-group"><label>Asunto</label>
+            <select name="subject">
+              <option>Información de productos</option>
+              <option>Estado de mi pedido</option>
+              <option>Quiero ser distribuidor</option>
+              <option>Sugerencia o reclamo</option>
+              <option>Otro</option>
+            </select>
+          </div>
+          <div class="form-group"><label>Mensaje</label><textarea rows="5" required name="msg" placeholder="Escribe tu mensaje aquí..."></textarea></div>
+          <button type="submit" class="btn btn-primary btn-lg btn-block">Enviar mensaje</button>
+          <p class="tiny" style="color:var(--muted);text-align:center;margin:10px 0 0">Al enviar aceptas nuestro aviso de privacidad.</p>
+        </form>
+      </div>
+
+      <div>
+        <div class="contact-card" style="margin-bottom:16px">
+          <h3 style="margin-top:0">Información</h3>
+          <div class="contact-line">
+            <span class="ic">📍</span>
+            <div>
+              <b>Dirección</b>
+              Av. Tláhuac 2772, Santa Ana Poniente,<br>Tláhuac, Ciudad de México.
+            </div>
+          </div>
+          <div class="contact-line">
+            <span class="ic">📞</span>
+            <div><b>Teléfono</b><a href="tel:+5215575538801">+52 55 7553 8801</a></div>
+          </div>
+          <div class="contact-line">
+            <span class="ic">💬</span>
+            <div><b>WhatsApp</b><a href="https://wa.me/5215575538801" target="_blank">+52 55 7553 8801</a></div>
+          </div>
+          <div class="contact-line">
+            <span class="ic">✉️</span>
+            <div><b>Correo</b><a href="mailto:contacto@ohmpharma.mx">contacto@ohmpharma.mx</a></div>
+          </div>
+          <div class="contact-line">
+            <span class="ic">🕒</span>
+            <div><b>Horario</b>Lun-Vie 9:00-18:00 hrs<br>Sáb 10:00-14:00 hrs</div>
+          </div>
+        </div>
+
+        <div class="map-wrap">
+          <iframe src="https://www.google.com/maps?q=Av.+Tl%C3%A1huac+2772,+Tl%C3%A1huac,+CDMX&output=embed" loading="lazy"></iframe>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section style="background:var(--bg-soft)">
+  <div class="container">
+    <div class="section-head">
+      <span class="eyebrow">Preguntas frecuentes</span>
+      <h2>Respuestas rápidas</h2>
+    </div>
+
+    <div style="max-width:760px;margin:0 auto;display:grid;gap:10px">
+      <details style="background:#fff;border:1px solid var(--line);border-radius:12px;padding:4px 16px">
+        <summary style="cursor:pointer;padding:14px 0;font-weight:700;color:var(--blue-900)">¿Cuánto tarda el envío?</summary>
+        <p style="padding:0 0 14px">En CDMX y zona metropolitana, 24-48 hrs. Al interior de la República, 3-5 días hábiles. En compras mayores a $999, el envío es GRATIS.</p>
+      </details>
+      <details style="background:#fff;border:1px solid var(--line);border-radius:12px;padding:4px 16px">
+        <summary style="cursor:pointer;padding:14px 0;font-weight:700;color:var(--blue-900)">¿Qué métodos de pago aceptan?</summary>
+        <p style="padding:0 0 14px">Tarjeta de crédito/débito, transferencia SPEI, pago en efectivo en OXXO y PayPal. Todas las transacciones están protegidas con encriptación SSL.</p>
+      </details>
+      <details style="background:#fff;border:1px solid var(--line);border-radius:12px;padding:4px 16px">
+        <summary style="cursor:pointer;padding:14px 0;font-weight:700;color:var(--blue-900)">¿Los medicamentos son originales?</summary>
+        <p style="padding:0 0 14px">100%. Solo trabajamos con laboratorios certificados por COFEPRIS y distribuidores oficiales. Todo nuestro catálogo cuenta con registro sanitario vigente.</p>
+      </details>
+      <details style="background:#fff;border:1px solid var(--line);border-radius:12px;padding:4px 16px">
+        <summary style="cursor:pointer;padding:14px 0;font-weight:700;color:var(--blue-900)">¿Puedo devolver un producto?</summary>
+        <p style="padding:0 0 14px">Sí. Ofrecemos 30 días de garantía. Si por alguna razón no estás conforme, te devolvemos tu dinero. Los productos abiertos de skincare pueden cambiarse por otro modelo.</p>
+      </details>
+      <details style="background:#fff;border:1px solid var(--line);border-radius:12px;padding:4px 16px">
+        <summary style="cursor:pointer;padding:14px 0;font-weight:700;color:var(--blue-900)">¿Tengo una farmacia, cómo compro de mayoreo?</summary>
+        <p style="padding:0 0 14px">Ve a la sección <a href="distribucion.html" style="color:var(--blue-600)">Distribución</a> y llena el formulario de cotización. Un asesor comercial te contactará en menos de 24 hrs hábiles.</p>
+      </details>
+    </div>
+  </div>
+</section>
+
+<div id="site-footer"></div>
+<div id="wa-float"></div>
+
+<script src="assets/js/products.js"></script>
+<script src="assets/js/main.js"></script>
+<script src="assets/js/cart.js"></script>
+<script src="assets/js/render.js"></script>
+</body>
+</html>

@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Farmayoreo Gin - Farmacia en línea | OHM Pharma</title>
+<meta name="description" content="Medicamentos, vitaminas, antigripales y cuidado personal con precios de mayoreo para el consumidor final. Envío en 24-48 hrs.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/styles.css">
+</head>
+<body data-section="farmacia" class="theme-farmacia">
+
+<div id="site-header"></div>
+
+<!-- Hero -->
+<section class="hero" style="padding:40px 0 50px">
+  <div class="container">
+    <div class="hero-grid">
+      <div>
+        <span class="hero-eyebrow"><span class="pulse"></span> 💊 Farmacia en línea · +4,000 productos</span>
+        <h1>La farmacia <span class="hl">más barata</span><br>te la trae Farmayoreo.</h1>
+        <p class="lead">
+          Los mismos medicamentos de patente y genéricos que encuentras en la cadena, pero hasta <b>40% más baratos</b>. Y te lo entregamos hasta la puerta de tu casa.
+        </p>
+        <div class="hero-cta">
+          <a class="btn btn-primary btn-lg" href="#catalogo">🛒 Ver catálogo</a>
+          <a class="btn btn-whatsapp btn-lg" href="https://wa.me/5215575538801" target="_blank">💬 Pedir por WhatsApp</a>
+        </div>
+        <div class="hero-trust">
+          <div class="ht"><span class="ic">🚚</span> <div>Envío 24-48h<br><small>GRATIS +$999</small></div></div>
+          <div class="ht"><span class="ic">✅</span> <div>100% originales<br><small>Laboratorios certificados</small></div></div>
+          <div class="ht"><span class="ic">💸</span> <div>Hasta 40% OFF<br><small>vs. cadenas</small></div></div>
+        </div>
+      </div>
+      <div class="hero-visual">
+        <img src="assets/logos/farmacia.jpeg" alt="Farmayoreo Gin" style="object-fit:contain;background:#0B2B5C">
+        <span class="hero-chip top-left">
+          <span class="ic">⚡</span>
+          <div>Entrega express<br><small style="color:var(--muted);font-weight:500">Hoy mismo en CDMX</small></div>
+        </span>
+        <span class="hero-chip bottom-right">
+          <span class="ic">🏷️</span>
+          <div>Precio mayoreo<br><small style="color:var(--muted);font-weight:500">Para consumidor final</small></div>
+        </span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Promo strip -->
+<section class="banner-strip" data-countdown style="padding:24px 0">
+  <div class="container" style="grid-template-columns:1fr auto">
+    <div>
+      <span class="kicker">🔥 ¡Solo por hoy!</span>
+      <h2 style="margin-top:4px;font-size:1.5rem">15% extra en toda la vitamina C. Termina a media noche.</h2>
+      <div class="countdown">
+        <div class="cd-box"><b data-cd="hours">00</b><span>Hrs</span></div>
+        <div class="cd-box"><b data-cd="mins">00</b><span>Min</span></div>
+        <div class="cd-box"><b data-cd="secs">00</b><span>Seg</span></div>
+      </div>
+    </div>
+    <a class="btn" style="background:var(--accent-farmacia);color:var(--blue-900)" href="#catalogo">Aprovechar →</a>
+  </div>
+</section>
+
+<!-- Catálogo -->
+<section id="catalogo">
+  <div class="container">
+    <div class="section-head">
+      <span class="eyebrow">Catálogo</span>
+      <h2>Encuentra lo que necesitas</h2>
+      <p>Medicamentos, vitaminas y cuidado personal con la calidad que esperas al precio que mereces.</p>
+    </div>
+
+    <div class="product-filters" id="filters"></div>
+    <div class="products" id="farmacia-grid"></div>
+  </div>
+</section>
+
+<!-- Banner 2x1 -->
+<section style="background:linear-gradient(135deg, #FFF5C9, #FFFDF2);padding:40px 0">
+  <div class="container" style="display:grid;gap:20px;grid-template-columns:1fr;align-items:center">
+    <div style="display:grid;gap:20px;grid-template-columns:1fr;align-items:center" class="banner-2col">
+      <div>
+        <span style="color:var(--blue-700);font-weight:800;text-transform:uppercase;letter-spacing:.1em;font-size:.8rem">🎁 Programa de lealtad</span>
+        <h2 style="margin-top:8px;color:var(--blue-900)">Acumula puntos y canjéalos por productos gratis</h2>
+        <p style="color:var(--ink-2)">Por cada $100 que compres ganas 10 puntos. Junta 500 puntos y llévate medicamento, vitaminas o skincare totalmente gratis. Cuantas más compras hagas, más te cuidamos nosotros.</p>
+        <a class="btn btn-dark" href="#">Más información →</a>
+      </div>
+      <div style="border-radius:22px;overflow:hidden;box-shadow:var(--shadow);aspect-ratio:16/10">
+        <img src="https://images.unsplash.com/photo-1576091160550-2173dba999ef?q=80&w=1400&auto=format&fit=crop" alt="Programa de lealtad" style="width:100%;height:100%;object-fit:cover">
+      </div>
+    </div>
+  </div>
+</section>
+<style>@media(min-width:780px){.banner-2col{grid-template-columns:1fr 1fr !important}}</style>
+
+<!-- Trust -->
+<section>
+  <div class="container">
+    <div class="section-head">
+      <span class="eyebrow">Garantías</span>
+      <h2>Comprar farmacia nunca fue tan fácil</h2>
+    </div>
+    <div class="features">
+      <div class="feature"><div class="ic">💊</div><h4>Medicamentos originales</h4><p>Solo trabajamos con laboratorios certificados COFEPRIS.</p></div>
+      <div class="feature"><div class="ic">🚚</div><h4>Envío express 24h</h4><p>En CDMX y área metropolitana. Resto del país 3-5 días.</p></div>
+      <div class="feature"><div class="ic">💳</div><h4>Pago seguro</h4><p>Tarjeta, SPEI, OXXO o PayPal. Tú eliges.</p></div>
+      <div class="feature"><div class="ic">↺</div><h4>30 días de garantía</h4><p>¿Problemas con tu producto? Te devolvemos tu dinero.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- Testimonials -->
+<section class="testimonials">
+  <div class="container">
+    <div class="section-head">
+      <span class="eyebrow">+12,000 familias nos eligen</span>
+      <h2>Confianza que se siente</h2>
+    </div>
+    <div class="reviews-grid">
+      <div class="review">
+        <span class="quote-icon">"</span>
+        <div class="stars">★★★★★</div>
+        <blockquote>La vitamina para mi mamá la pedí a las 9pm y llegó al mediodía del día siguiente. Precio imbatible, voy a comprar todo aquí.</blockquote>
+        <div class="author"><div class="avatar">KS</div><div><b>Karla S.</b><small>Cliente frecuente</small></div></div>
+      </div>
+      <div class="review">
+        <span class="quote-icon">"</span>
+        <div class="stars">★★★★★</div>
+        <blockquote>Pedí por WhatsApp, me asesoraron súper bien. 3 meses comprando aquí y ahorrando casi 40% vs farmacias de cadena.</blockquote>
+        <div class="author"><div class="avatar">MA</div><div><b>Miguel A.</b><small>CDMX</small></div></div>
+      </div>
+      <div class="review">
+        <span class="quote-icon">"</span>
+        <div class="stars">★★★★★</div>
+        <blockquote>Compré el botiquín completo y me ha sacado de varios apuros. Recomiendo 100% Farmayoreo, el servicio es excelente.</blockquote>
+        <div class="author"><div class="avatar">RL</div><div><b>Rosa L.</b><small>Edo. Méx.</small></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA final -->
+<section class="cta-final">
+  <div class="container wrap">
+    <h2>¿No encuentras el medicamento que buscas?</h2>
+    <p>Escríbenos por WhatsApp y te lo conseguimos al mejor precio.</p>
+    <div class="row">
+      <a class="btn btn-whatsapp btn-lg" href="https://wa.me/5215575538801?text=Hola%2C%20busco%20un%20medicamento" target="_blank">💬 Pedir por WhatsApp</a>
+      <a class="btn" style="background:#fff;color:var(--blue-900)" href="contacto.html">📞 Llamarnos</a>
+    </div>
+  </div>
+</section>
+
+<div id="site-footer"></div>
+<div id="wa-float"></div>
+
+<script src="assets/js/products.js"></script>
+<script src="assets/js/main.js"></script>
+<script src="assets/js/cart.js"></script>
+<script src="assets/js/render.js"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const list = getProducts('farmacia');
+    renderFilters('#filters', list, '#farmacia-grid');
+    renderProducts('#farmacia-grid', list);
+  });
+</script>
+</body>
+</html>
