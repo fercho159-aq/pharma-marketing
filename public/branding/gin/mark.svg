@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" role="img" aria-label="Farmayoreo Gin mark">
+  <title>Farmayoreo Gin · isologo</title>
+  <defs>
+    <clipPath id="gin-circle">
+      <circle cx="60" cy="60" r="58"/>
+    </clipPath>
+  </defs>
+  <!-- Soft sage disc -->
+  <circle cx="60" cy="60" r="58" fill="#DCE2D4"/>
+  <circle cx="60" cy="60" r="58" fill="none" stroke="#7A8B6F" stroke-width="1.25"/>
+
+  <g clip-path="url(#gin-circle)">
+    <!-- Feminine silhouette: shoulder, neck, profile, hair -->
+    <path
+      d="M 10 120
+         L 10 96
+         C 18 82, 34 78, 46 74
+         C 46 68, 42 64, 42 56
+         C 42 44, 52 36, 62 36
+         C 72 36, 78 44, 78 54
+         C 78 60, 76 64, 74 68
+         C 84 68, 92 74, 96 82
+         C 98 90, 98 100, 96 120
+         Z"
+      fill="#7A8B6F"
+    />
+    <!-- Hair strand flowing back -->
+    <path
+      d="M 60 36
+         C 76 34, 86 42, 86 52
+         C 86 60, 82 68, 76 72
+         C 82 68, 88 60, 86 48
+         C 84 40, 76 36, 66 36 Z"
+      fill="#5F6E57"
+    />
+    <!-- Gold leaf sprig behind -->
+    <g transform="translate(90,22) rotate(20)">
+      <path d="M 0 0 C 6 -10, 14 -10, 18 -4 C 14 2, 6 4, 0 0 Z" fill="#9F7B0B"/>
+      <path d="M 18 -4 L 28 -10" stroke="#9F7B0B" stroke-width="1.5" stroke-linecap="round"/>
+    </g>
+  </g>
+
+  <!-- Gold accent dot (heart gesture echo) -->
+  <circle cx="96" cy="58" r="3" fill="#9F7B0B"/>
+</svg>

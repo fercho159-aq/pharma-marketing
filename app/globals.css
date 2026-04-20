@@ -1,0 +1,132 @@
+@import "tailwindcss";
+
+@theme {
+  /* === PRIMARIOS OHM (extraídos del logo real) === */
+  --color-ohm-wine:       #830220;
+  --color-ohm-wine-dark:  #5C0116;
+  --color-ohm-wine-soft:  #A84356;
+
+  /* === ACENTOS DORADOS === */
+  --color-ohm-gold:       #9F7B0B;
+  --color-ohm-gold-soft:  #C9A14A;
+  --color-ohm-gold-pale:  #E8D9A8;
+
+  /* === TERCIARIO (uso puntual, hoja del loto) === */
+  --color-ohm-green:      #008200;
+
+  /* === NEUTROS CÁLIDOS (nunca #FFFFFF puro) === */
+  --color-ohm-ink:        #1C130E;
+  --color-ohm-ink-soft:   #4A3A30;
+  --color-ohm-cream:      #FAF7F2;
+  --color-ohm-paper:      #FDFBF7;
+  --color-ohm-line:       #E8E1D5;
+
+  /* === FARMAYOREO GIN (sage + gold + cream) === */
+  --color-gin-sage:       #7A8B6F;
+  --color-gin-sage-dark:  #4F5D46; /* AA-compliant for text on pale/cream */
+  --color-gin-sage-soft:  #A8B5A0;
+  --color-gin-sage-pale:  #DCE2D4;
+
+  /* === I LOVE MYSELF (nude rosado + gold + paper) === */
+  --color-ilm-nude:       #D4A5A0;
+  --color-ilm-nude-dark:  #8E5A54; /* AA-compliant for text on pale/cream */
+  --color-ilm-nude-soft:  #EAD3CE;
+  --color-ilm-nude-pale:  #F5E8E5;
+
+  /* === TIPOGRAFÍA (variables inyectadas por next/font) === */
+  --font-display: var(--font-display);
+  --font-body:    var(--font-body);
+
+  /* === ESCALA TIPOGRÁFICA FLUID === */
+  --text-display: clamp(3rem, 7vw, 5.5rem);
+  --text-h1:      clamp(2.25rem, 4vw, 3.5rem);
+  --text-h2:      clamp(1.75rem, 3vw, 2.5rem);
+  --text-h3:      1.5rem;
+  --text-body:    1rem;
+  --text-small:   0.875rem;
+  --text-caption: 0.75rem;
+
+  /* === ESPACIADO EDITORIAL === */
+  --spacing-section: clamp(4rem, 10vw, 8rem);
+
+  /* === RADIOS (boutique, casi sin esquinas redondeadas) === */
+  --radius-sm: 2px;
+  --radius-md: 4px;
+  --radius-lg: 6px;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+  body {
+    background: var(--color-ohm-cream);
+    color: var(--color-ohm-ink);
+    font-family: var(--font-body), system-ui, -apple-system, sans-serif;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-display), Georgia, serif;
+    font-weight: 400;
+    letter-spacing: -0.02em;
+    color: var(--color-ohm-ink);
+  }
+  ::selection {
+    background: var(--color-ohm-wine);
+    color: var(--color-ohm-cream);
+  }
+  :focus-visible {
+    outline: 2px solid var(--color-ohm-gold);
+    outline-offset: 2px;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}
+
+@layer base {
+  /* Reveal initial state to prevent FOUC before GSAP mounts */
+  .reveal-root[data-reveal="pending"]:not(:has([data-reveal-item])) {
+    opacity: 0;
+  }
+  .reveal-root[data-reveal="pending"] [data-reveal-item] {
+    opacity: 0;
+    transform: translate3d(0, 24px, 0);
+  }
+  .hero-enter[data-hero="pending"] [data-hero-item] {
+    opacity: 0;
+    transform: translate3d(0, 28px, 0);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .reveal-root[data-reveal="pending"],
+    .reveal-root[data-reveal="pending"] [data-reveal-item],
+    .hero-enter[data-hero="pending"] [data-hero-item] {
+      opacity: 1 !important;
+      transform: none !important;
+    }
+  }
+}
+
+@layer utilities {
+  .eyebrow {
+    font-family: var(--font-body), system-ui, sans-serif;
+    font-size: var(--text-caption);
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    font-weight: 500;
+    color: var(--color-ohm-wine);
+  }
+  .lead {
+    font-size: 1.125rem;
+    line-height: 1.6;
+    color: var(--color-ohm-ink-soft);
+    max-width: 42ch;
+  }
+}

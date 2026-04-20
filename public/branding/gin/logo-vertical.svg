@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 280 320" role="img" aria-label="Farmayoreo Gin">
+  <title>Farmayoreo Gin · vertical</title>
+  <defs>
+    <clipPath id="gin-circle-v">
+      <circle cx="140" cy="110" r="90"/>
+    </clipPath>
+  </defs>
+
+  <!-- Mark -->
+  <g>
+    <circle cx="140" cy="110" r="90" fill="#DCE2D4"/>
+    <circle cx="140" cy="110" r="90" fill="none" stroke="#7A8B6F" stroke-width="1.25"/>
+    <g clip-path="url(#gin-circle-v)">
+      <path
+        d="M 50 200
+           L 50 160
+           C 64 140, 90 132, 110 126
+           C 110 116, 104 110, 104 96
+           C 104 76, 120 62, 140 62
+           C 160 62, 170 76, 170 94
+           C 170 104, 166 112, 162 118
+           C 180 118, 196 128, 202 144
+           C 206 158, 206 178, 202 200 Z"
+        fill="#7A8B6F"
+      />
+      <path
+        d="M 132 62
+           C 160 60, 178 74, 178 90
+           C 178 104, 170 118, 160 124
+           C 170 116, 180 104, 176 84
+           C 172 70, 158 62, 142 62 Z"
+        fill="#5F6E57"
+      />
+      <g transform="translate(200,42) rotate(20)">
+        <path d="M 0 0 C 10 -16, 22 -16, 30 -6 C 22 4, 10 6, 0 0 Z" fill="#9F7B0B"/>
+        <path d="M 30 -6 L 46 -16" stroke="#9F7B0B" stroke-width="2" stroke-linecap="round"/>
+      </g>
+    </g>
+    <circle cx="208" cy="104" r="4" fill="#9F7B0B"/>
+  </g>
+
+  <!-- Wordmark -->
+  <g text-anchor="middle" font-family="'DM Serif Display', Georgia, serif" fill="#1C130E">
+    <text x="140" y="252" font-size="40" letter-spacing="-0.5">Farmayoreo</text>
+    <text x="140" y="294" font-size="36" font-style="italic" fill="#9F7B0B">Gin</text>
+  </g>
+  <line x1="105" y1="265" x2="175" y2="265" stroke="#9F7B0B" stroke-width="0.75"/>
+</svg>
