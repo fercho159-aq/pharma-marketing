@@ -21,9 +21,9 @@ export function HeaderNav({ variant = "grupo" }: { variant?: NavVariant }) {
           division={variant === "farmacia" ? "gin" : variant === "skincare" ? "i-love-myself" : "grupo-ohm"}
           variant="horizontal"
           href="/"
-          className="h-12 md:h-14 w-auto text-base md:text-lg"
-          width={240}
-          height={60}
+          className="h-[60px] md:h-[75px] w-auto text-base md:text-lg"
+          width={300}
+          height={75}
         />
 
         <nav className="hidden md:flex items-center gap-8" aria-label="Primaria">

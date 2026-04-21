@@ -16,9 +16,9 @@ type Props = {
 
 const sources: Record<Division, { horizontal: string; vertical: string; mark: string; alt: string }> = {
   "ohm-pharma": {
-    horizontal: "/branding/ohm-pharma/logo-original.jpeg",
-    vertical: "/branding/ohm-pharma/logo-original.jpeg",
-    mark: "/branding/ohm-pharma/logo-original.jpeg",
+    horizontal: "/branding/ohm-pharma/distribucion-logo.jpeg",
+    vertical: "/branding/ohm-pharma/distribucion-logo.jpeg",
+    mark: "/branding/ohm-pharma/distribucion-logo.jpeg",
     alt: "OHM Pharma — Distribuidora de Medicamento",
   },
   gin: {
@@ -34,10 +34,10 @@ const sources: Record<Division, { horizontal: string; vertical: string; mark: st
     alt: "I Love Myself — OHM Pharma",
   },
   "grupo-ohm": {
-    horizontal: "/branding/ohm-pharma/logo-original.jpeg",
-    vertical: "/branding/ohm-pharma/logo-original.jpeg",
-    mark: "/branding/ohm-pharma/logo-original.jpeg",
-    alt: "Grupo OHM",
+    horizontal: "/branding/ohm-pharma/distribucion-logo.jpeg",
+    vertical: "/branding/ohm-pharma/distribucion-logo.jpeg",
+    mark: "/branding/ohm-pharma/distribucion-logo.jpeg",
+    alt: "Grupo OHM — Distribuidora de Medicamento",
   },
 };
 
@@ -51,22 +51,6 @@ export function Logo({
   alt,
 }: Props) {
   const data = sources[division];
-  if (division === "grupo-ohm") {
-    const groupContent = (
-      <span
-        className={cn(
-          "inline-flex items-baseline gap-2 font-[family-name:var(--font-display)]",
-          className,
-        )}
-      >
-        <span className="text-[color:var(--color-ohm-wine)] text-[1.5em] leading-none">Grupo</span>
-        <span className="text-[color:var(--color-ohm-ink)] text-[1.5em] leading-none tracking-tight">
-          <span className="text-[color:var(--color-ohm-gold)]">O</span>HM
-        </span>
-      </span>
-    );
-    return href ? <Link href={href}>{groupContent}</Link> : groupContent;
-  }
   const img = (
     <Image
       src={data[variant]}
