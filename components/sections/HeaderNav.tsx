@@ -15,9 +15,21 @@ const WA_NUMBER = "5215555555555"; // TODO: número real de Sheccid
 
 export function HeaderNav({ variant = "grupo" }: { variant?: NavVariant }) {
   const isFarmacia = variant === "farmacia";
-  const logoWidth = isFarmacia ? 270 : 300;
-  const logoHeight = isFarmacia ? 68 : 75;
-  const logoHeightClass = isFarmacia ? "h-[68px] md:h-[68px]" : "h-[60px] md:h-[75px]";
+  const isDistribucion = variant === "distribucion" || variant === "grupo";
+
+  let logoWidth = 300;
+  let logoHeight = 75;
+  let logoHeightClass = "h-[60px] md:h-[75px]";
+
+  if (isFarmacia) {
+    logoWidth = 270;
+    logoHeight = 68;
+    logoHeightClass = "h-[68px] md:h-[68px]";
+  } else if (isDistribucion) {
+    logoWidth = 240;
+    logoHeight = 60;
+    logoHeightClass = "h-[60px] md:h-[60px]";
+  }
 
   return (
     <header className="sticky top-0 z-40 border-b border-[color:var(--color-ohm-line)] bg-[color:var(--color-ohm-cream)]/90 backdrop-blur supports-[backdrop-filter]:bg-[color:var(--color-ohm-cream)]/75">
