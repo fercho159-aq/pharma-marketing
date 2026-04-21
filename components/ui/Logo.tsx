@@ -22,16 +22,16 @@ const sources: Record<Division, { horizontal: string; vertical: string; mark: st
     alt: "OHM Pharma — Distribuidora de Medicamento",
   },
   gin: {
-    horizontal: "/branding/gin/logo-horizontal.svg",
-    vertical: "/branding/gin/logo-vertical.svg",
-    mark: "/branding/gin/mark.svg",
+    horizontal: "/branding/gin/farmacia-sin-fondo.png",
+    vertical: "/branding/gin/farmacia-sin-fondo.png",
+    mark: "/branding/gin/farmacia-sin-fondo.png",
     alt: "Farmayoreo Gin",
   },
   "i-love-myself": {
-    horizontal: "/branding/ohm-pharma/logo-original.jpeg",
-    vertical: "/branding/ohm-pharma/logo-original.jpeg",
-    mark: "/branding/ohm-pharma/logo-original.jpeg",
-    alt: "I Love Myself",
+    horizontal: "/branding/i-love-myself/logo-horizontal.svg",
+    vertical: "/branding/i-love-myself/logo-vertical.svg",
+    mark: "/branding/i-love-myself/mark.svg",
+    alt: "I Love Myself — OHM Pharma",
   },
   "grupo-ohm": {
     horizontal: "/branding/ohm-pharma/logo-original.jpeg",
@@ -51,24 +51,6 @@ export function Logo({
   alt,
 }: Props) {
   const data = sources[division];
-  if (division === "i-love-myself") {
-    const ilmContent = (
-      <span
-        className={cn(
-          "inline-flex flex-col items-start font-[family-name:var(--font-display)]",
-          className,
-        )}
-      >
-        <span className="text-[color:var(--color-ohm-ink)] text-[1.6em] leading-none tracking-tight">
-          I love <span className="italic text-[color:var(--color-ilm-nude-dark)]">myself</span>
-        </span>
-        <span className="text-[9px] tracking-[0.3em] uppercase text-[color:var(--color-ohm-gold)] mt-1 font-[family-name:var(--font-body)]">
-          Skincare · CDMX
-        </span>
-      </span>
-    );
-    return href ? <Link href={href}>{ilmContent}</Link> : ilmContent;
-  }
   if (division === "grupo-ohm") {
     const groupContent = (
       <span

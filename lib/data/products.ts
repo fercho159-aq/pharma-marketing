@@ -56,6 +56,30 @@ export const farmaciaCategories = [
 export const skincareProducts: Product[] = [
   {
     id: "s1",
+    name: "Kit Ritual Completo Pulpa Cruda de Arroz",
+    tagline: "Tónico + Sérum + Crema + Leche limpiadora",
+    price: 2490,
+    image: "/products/kit-1.jpeg",
+    category: "Kits",
+  },
+  {
+    id: "s2",
+    name: "Kit Esencial Pulpa Cruda de Arroz",
+    tagline: "Los 4 pasos del ritual · Edición especial",
+    price: 2290,
+    image: "/products/kit-2.jpeg",
+    category: "Kits",
+  },
+  {
+    id: "s3",
+    name: "Leche Limpiadora Pulpa Cruda de Arroz",
+    tagline: "Niacinamida · Ácido hialurónico · 150 ml",
+    price: 690,
+    image: "/products/leche-limpiadora.jpeg",
+    category: "Limpieza",
+  },
+  {
+    id: "s4",
     name: "Sérum renovador",
     tagline: "Vitamina C · Piel luminosa",
     price: 890,
@@ -63,7 +87,7 @@ export const skincareProducts: Product[] = [
     category: "Sérum",
   },
   {
-    id: "s2",
+    id: "s5",
     name: "Crema hidratante nocturna",
     tagline: "Ácido hialurónico · 50 ml",
     price: 1240,
@@ -71,7 +95,7 @@ export const skincareProducts: Product[] = [
     category: "Hidratación",
   },
   {
-    id: "s3",
+    id: "s6",
     name: "Aceite limpiador botánico",
     tagline: "Rosa mosqueta · 120 ml",
     price: 780,
