@@ -16,9 +16,9 @@ type Props = {
 
 const sources: Record<Division, { horizontal: string; vertical: string; mark: string; alt: string }> = {
   "ohm-pharma": {
-    horizontal: "/branding/ohm-pharma/distribucion-logo.jpeg",
-    vertical: "/branding/ohm-pharma/distribucion-logo.jpeg",
-    mark: "/branding/ohm-pharma/distribucion-logo.jpeg",
+    horizontal: "/branding/ohm-pharma/distribucion-sin-fondo.png",
+    vertical: "/branding/ohm-pharma/distribucion-sin-fondo.png",
+    mark: "/branding/ohm-pharma/distribucion-sin-fondo.png",
     alt: "OHM Pharma — Distribuidora de Medicamento",
   },
   gin: {
@@ -34,9 +34,9 @@ const sources: Record<Division, { horizontal: string; vertical: string; mark: st
     alt: "I Love Myself — OHM Pharma",
   },
   "grupo-ohm": {
-    horizontal: "/branding/ohm-pharma/distribucion-logo.jpeg",
-    vertical: "/branding/ohm-pharma/distribucion-logo.jpeg",
-    mark: "/branding/ohm-pharma/distribucion-logo.jpeg",
+    horizontal: "/branding/ohm-pharma/distribucion-sin-fondo.png",
+    vertical: "/branding/ohm-pharma/distribucion-sin-fondo.png",
+    mark: "/branding/ohm-pharma/distribucion-sin-fondo.png",
     alt: "Grupo OHM — Distribuidora de Medicamento",
   },
 };

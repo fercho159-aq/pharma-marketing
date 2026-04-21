@@ -14,6 +14,11 @@ const navLinks = [
 const WA_NUMBER = "5215555555555"; // TODO: número real de Sheccid
 
 export function HeaderNav({ variant = "grupo" }: { variant?: NavVariant }) {
+  const isFarmacia = variant === "farmacia";
+  const logoWidth = isFarmacia ? 270 : 300;
+  const logoHeight = isFarmacia ? 68 : 75;
+  const logoHeightClass = isFarmacia ? "h-[68px] md:h-[68px]" : "h-[60px] md:h-[75px]";
+
   return (
     <header className="sticky top-0 z-40 border-b border-[color:var(--color-ohm-line)] bg-[color:var(--color-ohm-cream)]/90 backdrop-blur supports-[backdrop-filter]:bg-[color:var(--color-ohm-cream)]/75">
       <div className="mx-auto max-w-7xl px-6 md:px-10 h-16 flex items-center justify-between gap-6">
@@ -21,9 +26,9 @@ export function HeaderNav({ variant = "grupo" }: { variant?: NavVariant }) {
           division={variant === "farmacia" ? "gin" : variant === "skincare" ? "i-love-myself" : "grupo-ohm"}
           variant="horizontal"
           href="/"
-          className="h-[60px] md:h-[75px] w-auto text-base md:text-lg"
-          width={300}
-          height={75}
+          className={`${logoHeightClass} w-auto text-base md:text-lg`}
+          width={logoWidth}
+          height={logoHeight}
         />
 
         <nav className="hidden md:flex items-center gap-8" aria-label="Primaria">
