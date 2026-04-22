@@ -1,4 +1,4 @@
-import { DM_Serif_Display, Inter } from "next/font/google";
+import { Lato, DM_Serif_Display } from "next/font/google";
 
 export const fontDisplay = DM_Serif_Display({
   subsets: ["latin"],
@@ -8,9 +8,9 @@ export const fontDisplay = DM_Serif_Display({
   display: "swap",
 });
 
-export const fontBody = Inter({
+export const fontBody = Lato({
   subsets: ["latin"],
-  weight: ["300", "400", "500", "600", "700"],
+  weight: ["300", "400", "700", "900"],
   variable: "--font-body",
   display: "swap",
 });

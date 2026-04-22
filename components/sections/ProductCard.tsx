@@ -1,7 +1,11 @@
+"use client";
+
 import Image from "next/image";
+import { useState } from "react";
 import type { Product } from "@/lib/data/products";
 import { cn } from "@/lib/utils";
-import { Plus } from "lucide-react";
+import { Plus, Check } from "lucide-react";
+import { useCart } from "@/lib/cart/CartContext";
 
 type Props = {
   product: Product;
@@ -26,6 +30,15 @@ const accentMap = {
 
 export function ProductCard({ product, accent = "sage", className }: Props) {
   const s = accentMap[accent];
+  const { add } = useCart();
+  const [added, setAdded] = useState(false);
+
+  const handleAdd = () => {
+    add(product, 1);
+    setAdded(true);
+    window.setTimeout(() => setAdded(false), 1400);
+  };
+
   return (
     <article
       className={cn(
@@ -49,7 +62,10 @@ export function ProductCard({ product, accent = "sage", className }: Props) {
         <h3 className="text-lg leading-snug text-[color:var(--color-ohm-ink)] font-[family-name:var(--font-display)]">
           {product.name}
         </h3>
-        <p className="text-sm text-[color:var(--color-ohm-ink-soft)] flex-1">{product.tagline}</p>
+        <p className="text-sm text-[color:var(--color-ohm-ink-soft)]">{product.tagline}</p>
+        <p className="text-sm leading-relaxed text-[color:var(--color-ohm-ink-soft)]/90 flex-1">
+          {product.description}
+        </p>
         <div className="flex items-end justify-between mt-3 pt-3 border-t border-[color:var(--color-ohm-line)]">
           <span className={cn("text-lg font-medium", s.price)}>
             ${product.price.toLocaleString("es-MX")}
@@ -57,14 +73,24 @@ export function ProductCard({ product, accent = "sage", className }: Props) {
           </span>
           <button
             type="button"
+            onClick={handleAdd}
             className={cn(
               "inline-flex items-center gap-1 border text-xs font-medium uppercase tracking-[0.15em] px-3 py-1.5 rounded-sm transition-colors",
               s.cta,
             )}
-            aria-label={`Agregar ${product.name}`}
+            aria-label={`Agregar ${product.name} al carrito`}
           >
-            <Plus size={14} strokeWidth={1.75} />
-            Agregar
+            {added ? (
+              <>
+                <Check size={14} strokeWidth={1.75} />
+                Agregado
+              </>
+            ) : (
+              <>
+                <Plus size={14} strokeWidth={1.75} />
+                Agregar
+              </>
+            )}
           </button>
         </div>
       </div>

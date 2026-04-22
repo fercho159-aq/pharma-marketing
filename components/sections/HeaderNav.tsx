@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Logo } from "@/components/ui/Logo";
+import { CartIcon } from "@/components/ui/CartIcon";
 import { MessageCircle } from "lucide-react";
 
 type NavVariant = "grupo" | "distribucion" | "farmacia" | "skincare";
@@ -48,22 +49,25 @@ export function HeaderNav({ variant = "grupo" }: { variant?: NavVariant }) {
             <Link
               key={l.href}
               href={l.href}
-              className="text-sm font-medium text-[color:var(--color-ohm-ink-soft)] hover:text-[color:var(--color-ohm-wine)] transition-colors"
+              className="text-base md:text-lg font-medium text-[color:var(--color-ohm-ink-soft)] hover:text-[color:var(--color-ohm-wine)] transition-colors"
             >
               {l.label}
             </Link>
           ))}
         </nav>
 
-        <a
-          href={`https://wa.me/${WA_NUMBER}`}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="hidden sm:inline-flex items-center gap-2 text-sm font-medium text-[color:var(--color-ohm-ink)] border border-[color:var(--color-ohm-gold)] px-4 py-2 rounded-sm hover:bg-[color:var(--color-ohm-gold-pale)] transition-colors"
-        >
-          <MessageCircle size={16} strokeWidth={1.5} />
-          WhatsApp
-        </a>
+        <div className="flex items-center gap-2 sm:gap-4">
+          <a
+            href={`https://wa.me/${WA_NUMBER}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="hidden sm:inline-flex items-center gap-2 text-base md:text-lg font-medium text-[color:var(--color-ohm-ink)] border border-[color:var(--color-ohm-gold)] px-4 py-2 rounded-sm hover:bg-[color:var(--color-ohm-gold-pale)] transition-colors"
+          >
+            <MessageCircle size={16} strokeWidth={1.5} />
+            WhatsApp
+          </a>
+          <CartIcon />
+        </div>
       </div>
     </header>
   );

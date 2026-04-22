@@ -27,11 +27,11 @@
   --color-gin-sage-soft:  #A8B5A0;
   --color-gin-sage-pale:  #DCE2D4;
 
-  /* === I LOVE MYSELF (nude rosado + gold + paper) === */
-  --color-ilm-nude:       #D4A5A0;
-  --color-ilm-nude-dark:  #8E5A54; /* AA-compliant for text on pale/cream */
-  --color-ilm-nude-soft:  #EAD3CE;
-  --color-ilm-nude-pale:  #F5E8E5;
+  /* === I LOVE MYSELF (rosa + morado, brand skincare) === */
+  --color-ilm-nude:       #D696C2;
+  --color-ilm-nude-dark:  #6E3495; /* purple, AA-compliant for text on pale */
+  --color-ilm-nude-soft:  #E8BFDB;
+  --color-ilm-nude-pale:  #F7E4EE;
 
   /* === TIPOGRAFÍA (variables inyectadas por next/font) === */
   --font-display: var(--font-display);

@@ -16,9 +16,9 @@ type Props = {
 
 const sources: Record<Division, { horizontal: string; vertical: string; mark: string; alt: string }> = {
   "ohm-pharma": {
-    horizontal: "/branding/ohm-pharma/distribucion-sin-fondo.png",
-    vertical: "/branding/ohm-pharma/distribucion-sin-fondo.png",
-    mark: "/branding/ohm-pharma/distribucion-sin-fondo.png",
+    horizontal: "/branding/ohm-pharma/ohm-pharma-distribucion.png",
+    vertical: "/branding/ohm-pharma/ohm-pharma-distribucion.png",
+    mark: "/branding/ohm-pharma/ohm-pharma-distribucion.png",
     alt: "OHM Pharma — Distribuidora de Medicamento",
   },
   gin: {
@@ -28,15 +28,15 @@ const sources: Record<Division, { horizontal: string; vertical: string; mark: st
     alt: "Farmayoreo Gin",
   },
   "i-love-myself": {
-    horizontal: "/branding/i-love-myself/logo-horizontal.svg",
-    vertical: "/branding/i-love-myself/logo-vertical.svg",
-    mark: "/branding/i-love-myself/mark.svg",
+    horizontal: "/branding/i-love-myself/skincare-logo.png",
+    vertical: "/branding/i-love-myself/skincare-logo.png",
+    mark: "/branding/i-love-myself/skincare-logo.png",
     alt: "I Love Myself — OHM Pharma",
   },
   "grupo-ohm": {
-    horizontal: "/branding/ohm-pharma/distribucion-sin-fondo.png",
-    vertical: "/branding/ohm-pharma/distribucion-sin-fondo.png",
-    mark: "/branding/ohm-pharma/distribucion-sin-fondo.png",
+    horizontal: "/branding/ohm-pharma/ohm-pharma-distribucion.png",
+    vertical: "/branding/ohm-pharma/ohm-pharma-distribucion.png",
+    mark: "/branding/ohm-pharma/ohm-pharma-distribucion.png",
     alt: "Grupo OHM — Distribuidora de Medicamento",
   },
 };

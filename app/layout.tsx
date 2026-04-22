@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { fontDisplay, fontBody } from "@/lib/fonts";
+import { CartProvider } from "@/lib/cart/CartContext";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -21,7 +22,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="es" className={`${fontDisplay.variable} ${fontBody.variable}`}>
-      <body>{children}</body>
+      <body>
+        <CartProvider>{children}</CartProvider>
+      </body>
     </html>
   );
 }
