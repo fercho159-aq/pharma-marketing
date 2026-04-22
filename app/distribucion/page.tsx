@@ -45,11 +45,11 @@ export default function DistribucionPage() {
             </div>
             <div className="relative aspect-[4/5] bg-[color:var(--color-ohm-paper)] border border-[color:var(--color-ohm-line)] rounded-sm p-10 flex items-center justify-center">
               <Image
-                src="/branding/ohm-pharma/logo-original.jpeg"
+                src="/branding/ohm-pharma/ohm-pharma-distribucion.png"
                 alt="OHM Pharma Distribución"
-                width={480}
-                height={240}
-                className="mix-blend-multiply w-full h-auto"
+                width={400}
+                height={200}
+                className="w-full h-auto object-contain"
                 priority
               />
             </div>
