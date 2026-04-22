@@ -54,32 +54,33 @@ export default function Home() {
             {/* Columna derecha: composición asimétrica de 3 logos */}
             <div data-hero-item className="relative hidden lg:block aspect-[4/5]">
               <div className="absolute inset-0">
-                <div className="absolute top-0 right-0 w-[78%] aspect-[4/5] bg-[color:var(--color-ohm-paper)] border border-[color:var(--color-ohm-line)] rounded-sm p-10 flex items-center justify-center">
+                <div className="absolute top-0 right-0 w-[78%] aspect-[4/5] bg-[color:var(--color-ohm-paper)] border border-[color:var(--color-ohm-line)] rounded-sm p-8 flex items-center justify-center">
                   <Image
-                    src="/branding/ohm-pharma/logo-original.jpeg"
+                    src="/branding/ohm-pharma/ohm-pharma-distribucion.png"
                     alt="OHM Pharma Distribuidora"
-                    width={380}
-                    height={190}
-                    className="w-full h-auto mix-blend-multiply"
+                    width={320}
+                    height={160}
+                    className="w-full h-auto object-contain"
                     priority
                   />
                 </div>
                 <div className="absolute bottom-[18%] left-0 w-[52%] aspect-square bg-[color:var(--color-gin-sage-pale)] border border-[color:var(--color-gin-sage-soft)] rounded-sm p-8 flex items-center justify-center">
                   <Image
-                    src="/branding/gin/logo-vertical.svg"
+                    src="/branding/gin/farmacia-sin-fondo.png"
                     alt="Farmayoreo Gin"
                     width={220}
-                    height={240}
-                    className="w-auto h-full"
+                    height={220}
+                    className="w-auto h-full object-contain"
                   />
                 </div>
-                <div className="absolute bottom-0 right-[10%] w-[44%] aspect-[5/3] bg-[color:var(--color-ilm-nude-pale)] border border-[color:var(--color-ilm-nude-soft)] rounded-sm p-5 flex flex-col items-start justify-center">
-                  <span className="font-[family-name:var(--font-display)] text-2xl leading-none text-[color:var(--color-ohm-ink)]">
-                    I love <span className="italic text-[color:var(--color-ilm-nude-dark)]">myself</span>
-                  </span>
-                  <span className="mt-2 text-[9px] uppercase tracking-[0.3em] text-[color:var(--color-ohm-gold)]">
-                    Skincare · CDMX
-                  </span>
+                <div className="absolute bottom-0 right-[10%] w-[44%] aspect-[5/3] bg-[color:var(--color-ilm-nude-pale)] border border-[color:var(--color-ilm-nude-soft)] rounded-sm p-4 flex items-center justify-center">
+                  <Image
+                    src="/branding/i-love-myself/skincare-logo.png"
+                    alt="I Love Myself Skincare"
+                    width={200}
+                    height={80}
+                    className="w-full h-auto object-contain"
+                  />
                 </div>
               </div>
             </div>

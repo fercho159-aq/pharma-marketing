@@ -17,10 +17,11 @@ const WA_NUMBER = "5215555555555"; // TODO: número real de Sheccid
 export function HeaderNav({ variant = "grupo" }: { variant?: NavVariant }) {
   const isFarmacia = variant === "farmacia";
   const isDistribucion = variant === "distribucion" || variant === "grupo";
+  const isSkincare = variant === "skincare";
 
-  let logoWidth = 300;
-  let logoHeight = 75;
-  let logoHeightClass = "h-[60px] md:h-[75px]";
+  let logoWidth = 255;
+  let logoHeight = 64;
+  let logoHeightClass = "h-[55px] md:h-[64px]";
 
   if (isFarmacia) {
     logoWidth = 270;
@@ -30,6 +31,10 @@ export function HeaderNav({ variant = "grupo" }: { variant?: NavVariant }) {
     logoWidth = 240;
     logoHeight = 60;
     logoHeightClass = "h-[60px] md:h-[60px]";
+  } else if (isSkincare) {
+    logoWidth = 255;
+    logoHeight = 64;
+    logoHeightClass = "h-[55px] md:h-[64px]";
   }
 
   return (

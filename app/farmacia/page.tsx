@@ -46,11 +46,11 @@ export default function FarmaciaPage() {
             </div>
             <div className="relative aspect-[4/5] bg-[color:var(--color-ohm-paper)] border border-[color:var(--color-gin-sage-soft)] rounded-sm p-10 flex items-center justify-center">
               <Image
-                src="/branding/gin/logo-vertical.svg"
+                src="/branding/gin/farmacia-sin-fondo.png"
                 alt="Farmayoreo Gin"
                 width={320}
-                height={400}
-                className="w-auto h-full"
+                height={320}
+                className="w-full h-auto object-contain"
                 priority
               />
             </div>
@@ -91,7 +91,7 @@ export default function FarmaciaPage() {
             <Reveal className="grid grid-cols-2 lg:grid-cols-4 gap-6">
               {farmaciaProducts.map((p) => (
                 <div key={p.id} data-reveal-item>
-                  <ProductCard product={p} accent="sage" />
+                  <ProductCard product={p} accent="sage" detailBase="/farmacia" />
                 </div>
               ))}
             </Reveal>

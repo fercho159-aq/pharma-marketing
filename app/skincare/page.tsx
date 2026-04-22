@@ -67,7 +67,7 @@ export default function SkincarePage() {
             <Reveal className="grid grid-cols-1 md:grid-cols-3 gap-8">
               {skincareProducts.map((p) => (
                 <div key={p.id} data-reveal-item>
-                  <ProductCard product={p} accent="nude" />
+                  <ProductCard product={p} accent="nude" detailBase="/skincare" />
                 </div>
               ))}
             </Reveal>

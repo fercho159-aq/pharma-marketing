@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { useState } from "react";
 import type { Product } from "@/lib/data/products";
 import { cn } from "@/lib/utils";
@@ -11,6 +12,8 @@ type Props = {
   product: Product;
   accent?: "sage" | "nude" | "wine";
   className?: string;
+  /** The base URL for the product detail page, e.g. "/skincare" or "/farmacia" */
+  detailBase?: string;
 };
 
 const accentMap = {
@@ -28,24 +31,22 @@ const accentMap = {
   },
 };
 
-export function ProductCard({ product, accent = "sage", className }: Props) {
+export function ProductCard({ product, accent = "sage", className, detailBase }: Props) {
   const s = accentMap[accent];
   const { add } = useCart();
   const [added, setAdded] = useState(false);
 
-  const handleAdd = () => {
+  const handleAdd = (e: React.MouseEvent) => {
+    e.preventDefault(); // don't navigate when clicking the button
     add(product, 1);
     setAdded(true);
     window.setTimeout(() => setAdded(false), 1400);
   };
 
-  return (
-    <article
-      className={cn(
-        "group border border-[color:var(--color-ohm-line)] bg-[color:var(--color-ohm-paper)] rounded-sm overflow-hidden flex flex-col",
-        className,
-      )}
-    >
+  const detailHref = detailBase ? `${detailBase}/${product.id}` : undefined;
+
+  const cardContent = (
+    <>
       <div className="aspect-[4/5] relative overflow-hidden bg-[color:var(--color-ohm-gold-pale)]/30">
         <Image
           src={product.image}
@@ -63,9 +64,14 @@ export function ProductCard({ product, accent = "sage", className }: Props) {
           {product.name}
         </h3>
         <p className="text-sm text-[color:var(--color-ohm-ink-soft)]">{product.tagline}</p>
-        <p className="text-sm leading-relaxed text-[color:var(--color-ohm-ink-soft)]/90 flex-1">
+        <p className="text-sm leading-relaxed text-[color:var(--color-ohm-ink-soft)]/90 flex-1 line-clamp-3">
           {product.description}
         </p>
+        {detailHref && (
+          <span className="text-xs font-medium underline underline-offset-4 text-[color:var(--color-ohm-ink-soft)] opacity-0 group-hover:opacity-100 transition-opacity">
+            Ver detalles →
+          </span>
+        )}
         <div className="flex items-end justify-between mt-3 pt-3 border-t border-[color:var(--color-ohm-line)]">
           <span className={cn("text-lg font-medium", s.price)}>
             ${product.price.toLocaleString("es-MX")}
@@ -94,6 +100,31 @@ export function ProductCard({ product, accent = "sage", className }: Props) {
           </button>
         </div>
       </div>
+    </>
+  );
+
+  if (detailHref) {
+    return (
+      <Link
+        href={detailHref}
+        className={cn(
+          "group border border-[color:var(--color-ohm-line)] bg-[color:var(--color-ohm-paper)] rounded-sm overflow-hidden flex flex-col hover:border-[color:var(--color-ohm-wine)]/40 transition-colors",
+          className,
+        )}
+      >
+        {cardContent}
+      </Link>
+    );
+  }
+
+  return (
+    <article
+      className={cn(
+        "group border border-[color:var(--color-ohm-line)] bg-[color:var(--color-ohm-paper)] rounded-sm overflow-hidden flex flex-col",
+        className,
+      )}
+    >
+      {cardContent}
     </article>
   );
 }
