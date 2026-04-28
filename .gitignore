@@ -45,3 +45,5 @@ next-env.d.ts
 # local source assets (working files, not for production)
 /logos
 /imagenes-productos
+
+/lib/generated/prisma

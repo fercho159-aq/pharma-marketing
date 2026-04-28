@@ -1,20 +1,21 @@
 /**
  * POST /api/checkout/preference
  *
- * Crea una preference de Mercado Pago Checkout Pro y devuelve el `init_point`
- * al frontend, que redirige al usuario al checkout de MP.
+ * 1. Crea la preference en Mercado Pago.
+ * 2. Guarda la orden como PENDING en la DB de Neon.
+ * 3. Devuelve { id, initPoint, sandboxInitPoint, externalReference } al frontend.
  *
  * Body: {
  *   items: CartItem[],
  *   shipping: ShippingAddress,
- *   shippingMethod: ShippingQuote
+ *   shippingMethod: ShippingQuote,
+ *   subtotal: number
  * }
- *
- * Returns: { id, initPoint, sandboxInitPoint, externalReference }
  */
 import { NextResponse } from "next/server";
 import { isMpConfigured } from "@/lib/mercadopago/client";
 import { createCheckoutPreference } from "@/lib/mercadopago/preference";
+import { createPendingOrder } from "@/lib/db/orders";
 import type { CartItem } from "@/lib/cart/CartContext";
 import type { ShippingAddress, ShippingQuote } from "@/lib/shipping/types";
 
@@ -24,6 +25,7 @@ type Body = {
   items: CartItem[];
   shipping: ShippingAddress;
   shippingMethod: ShippingQuote;
+  subtotal: number;
 };
 
 export async function POST(req: Request) {
@@ -65,12 +67,12 @@ export async function POST(req: Request) {
     );
   }
 
-  // Base URL: prioriza la variable de entorno; en dev cae al origin del request.
   const baseUrl =
     process.env.NEXT_PUBLIC_BASE_URL ??
     new URL(req.url).origin;
 
   try {
+    // 1. Crear preference en Mercado Pago
     const preference = await createCheckoutPreference({
       items: body.items,
       shipping: body.shipping,
@@ -78,9 +80,23 @@ export async function POST(req: Request) {
       baseUrl,
     });
 
+    // 2. Guardar orden pendiente en DB (no bloqueamos si falla — MP ya aceptó)
+    try {
+      await createPendingOrder({
+        externalReference: preference.externalReference,
+        mpPreferenceId: preference.id,
+        items: body.items,
+        shipping: body.shipping,
+        shippingMethod: body.shippingMethod,
+        subtotal: typeof body.subtotal === "number" ? body.subtotal : 0,
+      });
+    } catch (dbErr) {
+      // Log pero no interrumpimos el flujo — el usuario ya puede pagar
+      console.error("[preference] error guardando orden en DB:", dbErr);
+    }
+
     return NextResponse.json(preference);
   } catch (err) {
-    // eslint-disable-next-line no-console
     console.error("[/api/checkout/preference] error MP:", err);
     return NextResponse.json(
       {

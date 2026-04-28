@@ -1,0 +1,92 @@
+// Prisma schema — Grupo OHM e-commerce
+// Docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client"
+  output   = "../lib/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ─── Enums ────────────────────────────────────────────────────────────────────
+
+enum OrderStatus {
+  PENDING     // Preference creada, esperando pago
+  APPROVED    // Pago aprobado por MP
+  IN_PROCESS  // En proceso (OXXO, transferencia, etc.)
+  REJECTED    // Pago rechazado
+  CANCELLED   // Cancelado
+  SHIPPED     // Envío creado en 99 minutos
+  DELIVERED   // Entregado (actualización manual)
+}
+
+// ─── Modelos ──────────────────────────────────────────────────────────────────
+
+model Order {
+  id                String      @id @default(uuid())
+
+  // Referencias externas
+  externalReference String      @unique       // OHM-<timestamp>
+  mpPreferenceId    String?                   // ID de preference en MP
+  mpPaymentId       String?     @unique       // ID de pago en MP (llega por webhook)
+
+  // Estado del pedido
+  status            OrderStatus @default(PENDING)
+  mpStatusDetail    String?                   // "accredited", "cc_rejected_bad_filled_cvv", etc.
+  mpPaymentMethod   String?                   // "visa", "master", "oxxo", etc.
+
+  // Totales (en MXN)
+  subtotal          Float
+  shippingCost      Float
+  total             Float
+  currency          String      @default("MXN")
+
+  // Datos del comprador
+  payerName         String
+  payerEmail        String
+  payerPhone        String?
+
+  // Dirección de envío
+  shippingStreet    String
+  shippingCity      String
+  shippingState     String
+  shippingZip       String
+
+  // Método de envío seleccionado
+  shippingMethodId    String?                 // "standard-cdmx" | "99min-express", etc.
+  shippingMethodLabel String?                 // "Envío Express CDMX"
+  shippingCarrier     String?                 // "standard" | "99minutos"
+  shippingEta         String?                 // "2-6 hrs", "24-48 hrs", etc.
+
+  // 99 minutos (se llena post-pago)
+  shipmentId99      String?                   // ID/guía de 99 minutos
+
+  // Timestamps
+  createdAt         DateTime    @default(now())
+  updatedAt         DateTime    @updatedAt
+
+  // Relaciones
+  items             OrderItem[]
+
+  @@index([payerEmail])
+  @@index([status])
+  @@index([createdAt])
+}
+
+model OrderItem {
+  id           String  @id @default(uuid())
+  orderId      String
+  order        Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
+
+  productId    String
+  productName  String
+  productImage String?
+  category     String?
+  quantity     Int
+  unitPrice    Float
+  lineTotal    Float   // quantity * unitPrice
+
+  @@index([orderId])
+}

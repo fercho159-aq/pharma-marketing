@@ -112,6 +112,7 @@ export function CartPageClient() {
           items,
           shipping,
           shippingMethod: selectedQuote,
+          subtotal,
         }),
       });
 
