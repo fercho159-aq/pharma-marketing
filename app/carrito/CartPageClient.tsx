@@ -2,56 +2,33 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useMemo, useState, type FormEvent } from "react";
-import { Minus, Plus, Trash2, Lock, CheckCircle2, ShoppingBag } from "lucide-react";
+import { useEffect, useMemo, useState, type FormEvent } from "react";
+import {
+  Minus,
+  Plus,
+  Trash2,
+  Lock,
+  ShoppingBag,
+  Truck,
+  RefreshCw,
+} from "lucide-react";
 import { useCart } from "@/lib/cart/CartContext";
+import type { ShippingAddress, ShippingQuote } from "@/lib/shipping/types";
 
-type Step = "cart" | "shipping" | "payment" | "processing" | "success";
+type Step = "cart" | "shipping" | "method" | "redirecting";
 
-type ShippingForm = {
-  fullName: string;
-  email: string;
-  phone: string;
-  street: string;
-  city: string;
-  state: string;
-  zip: string;
-};
-
-type PaymentForm = {
-  cardName: string;
-  cardNumber: string;
-  expiry: string;
-  cvc: string;
-};
-
-const SHIPPING_COST = 149;
 const FREE_SHIPPING_THRESHOLD = 1500;
 
 function formatMXN(n: number) {
   return `$${n.toLocaleString("es-MX", { minimumFractionDigits: 2, maximumFractionDigits: 2 })} MXN`;
 }
 
-function maskCard(value: string) {
-  return value
-    .replace(/\D/g, "")
-    .slice(0, 16)
-    .replace(/(\d{4})(?=\d)/g, "$1 ")
-    .trim();
-}
-
-function maskExpiry(value: string) {
-  const digits = value.replace(/\D/g, "").slice(0, 4);
-  if (digits.length < 3) return digits;
-  return `${digits.slice(0, 2)}/${digits.slice(2)}`;
-}
-
 export function CartPageClient() {
-  const { items, subtotal, setQty, remove, clear } = useCart();
+  const { items, subtotal, setQty, remove } = useCart();
   const [step, setStep] = useState<Step>("cart");
-  const [orderId, setOrderId] = useState<string>("");
+  const [error, setError] = useState<string | null>(null);
 
-  const [shipping, setShipping] = useState<ShippingForm>({
+  const [shipping, setShipping] = useState<ShippingAddress>({
     fullName: "",
     email: "",
     phone: "",
@@ -60,128 +37,163 @@ export function CartPageClient() {
     state: "",
     zip: "",
   });
-  const [payment, setPayment] = useState<PaymentForm>({
-    cardName: "",
-    cardNumber: "",
-    expiry: "",
-    cvc: "",
-  });
 
-  const shippingCost = useMemo(() => {
-    if (items.length === 0) return 0;
-    return subtotal >= FREE_SHIPPING_THRESHOLD ? 0 : SHIPPING_COST;
-  }, [subtotal, items.length]);
+  const [quotes, setQuotes] = useState<ShippingQuote[] | null>(null);
+  const [quotesLoading, setQuotesLoading] = useState(false);
+  const [selectedQuoteId, setSelectedQuoteId] = useState<string | null>(null);
+  const [redirecting, setRedirecting] = useState(false);
+
+  const selectedQuote = useMemo(
+    () => quotes?.find((q) => q.id === selectedQuoteId) ?? null,
+    [quotes, selectedQuoteId],
+  );
+  const shippingCost = selectedQuote?.price ?? 0;
   const total = subtotal + shippingCost;
 
-  const handleShippingSubmit = (e: FormEvent<HTMLFormElement>) => {
+  /* ----------------------- shipping submit -> quotes ---------------------- */
+  const handleShippingSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setStep("payment");
+    setError(null);
+    setQuotesLoading(true);
+    setQuotes(null);
+    setSelectedQuoteId(null);
+
+    try {
+      const res = await fetch("/api/shipping/quote", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          address: shipping,
+          subtotal,
+          items: items.map((i) => ({
+            id: i.product.id,
+            name: i.product.name,
+            qty: i.qty,
+          })),
+        }),
+      });
+
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        throw new Error(data.error ?? "No pudimos cotizar el envío.");
+      }
+
+      const data: { quotes: ShippingQuote[] } = await res.json();
+      if (!data.quotes || data.quotes.length === 0) {
+        throw new Error("No hay opciones de envío disponibles para tu CP.");
+      }
+
+      setQuotes(data.quotes);
+      const recommended = data.quotes.find((q) => q.recommended) ?? data.quotes[0];
+      setSelectedQuoteId(recommended.id);
+      setStep("method");
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Error inesperado.");
+    } finally {
+      setQuotesLoading(false);
+    }
   };
 
-  const handlePaymentSubmit = (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    setStep("processing");
-    // Simulate payment processing
-    window.setTimeout(() => {
-      const id = `OHM-${Date.now().toString().slice(-8)}`;
-      setOrderId(id);
-      clear();
-      setStep("success");
-    }, 2200);
+  /* ----------------------- method -> Mercado Pago ------------------------ */
+  const handleProceedToMP = async () => {
+    if (!selectedQuote) {
+      setError("Selecciona un método de envío.");
+      return;
+    }
+    setError(null);
+    setRedirecting(true);
+    setStep("redirecting");
+
+    try {
+      const res = await fetch("/api/checkout/preference", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          items,
+          shipping,
+          shippingMethod: selectedQuote,
+        }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        throw new Error(data.error ?? "No se pudo iniciar el pago.");
+      }
+
+      // Guarda referencia para que la página de success pueda mostrarla
+      try {
+        window.sessionStorage.setItem(
+          "ohm-pending-order",
+          JSON.stringify({
+            externalReference: data.externalReference,
+            shipping,
+            method: selectedQuote,
+            subtotal,
+            total,
+            ts: Date.now(),
+          }),
+        );
+      } catch {
+        /* sessionStorage puede no estar disponible */
+      }
+
+      // Redirige al checkout de Mercado Pago.
+      // En sandbox usamos sandbox_init_point si la public key empieza con "TEST-"
+      // o el access token también. Como las credenciales recibidas son APP_USR
+      // (test mode), usamos initPoint normal — MP detecta automáticamente.
+      window.location.href = data.initPoint;
+    } catch (err) {
+      setRedirecting(false);
+      setStep("method");
+      setError(err instanceof Error ? err.message : "Error inesperado.");
+    }
   };
 
-  /* ---------------------------- SUCCESS STATE ---------------------------- */
-  if (step === "success") {
-    return (
-      <section className="mx-auto max-w-3xl px-6 md:px-10 py-16 md:py-24">
-        <div className="bg-[color:var(--color-ohm-paper)] border border-[color:var(--color-ohm-line)] rounded-sm p-8 md:p-12 text-center">
-          <CheckCircle2
-            size={56}
-            strokeWidth={1.25}
-            className="mx-auto text-[color:var(--color-ohm-wine)]"
-          />
-          <h1 className="mt-6 text-3xl md:text-4xl font-[family-name:var(--font-display)] text-[color:var(--color-ohm-ink)]">
-            ¡Gracias por tu compra!
-          </h1>
-          <p className="mt-3 text-[color:var(--color-ohm-ink-soft)]">
-            Tu pedido <span className="font-semibold text-[color:var(--color-ohm-wine)]">{orderId}</span> ha sido
-            confirmado. Enviamos una copia del recibo a {shipping.email || "tu correo"}.
-          </p>
-          <div className="mt-8 text-left border-t border-[color:var(--color-ohm-line)] pt-6 space-y-2 text-sm text-[color:var(--color-ohm-ink-soft)]">
-            <p>
-              <strong className="text-[color:var(--color-ohm-ink)]">Envío a:</strong> {shipping.fullName || "—"},{" "}
-              {shipping.street || "—"}, {shipping.city || "—"}, {shipping.state || "—"} {shipping.zip}
-            </p>
-            <p>
-              <strong className="text-[color:var(--color-ohm-ink)]">Total pagado:</strong> {formatMXN(total)}
-            </p>
-            <p className="text-xs italic">
-              Esta es una simulación. No se procesó ningún cargo real a tarjeta.
-            </p>
-          </div>
-          <div className="mt-8 flex flex-wrap gap-3 justify-center">
-            <Link
-              href="/farmacia"
-              className="inline-flex items-center gap-2 border border-[color:var(--color-ohm-wine)] text-[color:var(--color-ohm-wine)] px-5 py-2.5 rounded-sm hover:bg-[color:var(--color-ohm-wine)] hover:text-[color:var(--color-ohm-cream)] transition-colors text-sm font-medium"
-            >
-              Ver Farmacia
-            </Link>
-            <Link
-              href="/skincare"
-              className="inline-flex items-center gap-2 border border-[color:var(--color-ilm-nude-dark)] text-[color:var(--color-ilm-nude-dark)] px-5 py-2.5 rounded-sm hover:bg-[color:var(--color-ilm-nude-dark)] hover:text-[color:var(--color-ohm-cream)] transition-colors text-sm font-medium"
-            >
-              Ver Skincare
-            </Link>
-          </div>
-        </div>
-      </section>
-    );
-  }
-
-  /* --------------------------- PROCESSING STATE --------------------------- */
-  if (step === "processing") {
-    return (
-      <section className="mx-auto max-w-3xl px-6 md:px-10 py-24 text-center">
-        <div className="inline-flex h-14 w-14 rounded-full border-2 border-[color:var(--color-ohm-wine)] border-t-transparent animate-spin" />
-        <h2 className="mt-6 text-2xl md:text-3xl font-[family-name:var(--font-display)] text-[color:var(--color-ohm-ink)]">
-          Procesando tu pago…
-        </h2>
-        <p className="mt-3 text-[color:var(--color-ohm-ink-soft)]">
-          Confirmando la transacción de forma segura. No cierres esta ventana.
-        </p>
-      </section>
-    );
-  }
+  /* ----------------------- AUTO-RECALC quotes when zip changes ----------- */
+  // Si el usuario regresa al paso "shipping" y modifica el ZIP, limpiamos quotes.
+  useEffect(() => {
+    if (step === "shipping" && quotes) {
+      setQuotes(null);
+      setSelectedQuoteId(null);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [shipping.zip, step]);
 
   /* ----------------------------- EMPTY STATE ----------------------------- */
   if (items.length === 0 && step === "cart") {
     return (
       <section className="mx-auto max-w-2xl px-6 md:px-10 py-20 text-center">
-        <ShoppingBag
-          size={48}
-          strokeWidth={1.25}
-          className="mx-auto text-[color:var(--color-ohm-ink-soft)]"
-        />
+        <ShoppingBag size={48} strokeWidth={1.25} className="mx-auto text-[color:var(--color-ohm-ink-soft)]" />
         <h1 className="mt-6 text-3xl md:text-4xl font-[family-name:var(--font-display)] text-[color:var(--color-ohm-ink)]">
           Tu carrito está vacío
         </h1>
         <p className="mt-3 text-[color:var(--color-ohm-ink-soft)]">
-          Descubre nuestros productos de farmacia y skincare formulados con ciencia y cuidado.
+          Descubre nuestros productos de farmacia y skincare.
         </p>
         <div className="mt-8 flex flex-wrap gap-3 justify-center">
-          <Link
-            href="/farmacia"
-            className="inline-flex items-center gap-2 border border-[color:var(--color-gin-sage-dark)] text-[color:var(--color-gin-sage-dark)] px-5 py-2.5 rounded-sm hover:bg-[color:var(--color-gin-sage-pale)] transition-colors text-sm font-medium"
-          >
+          <Link href="/farmacia" className="inline-flex items-center gap-2 border border-[color:var(--color-gin-sage-dark)] text-[color:var(--color-gin-sage-dark)] px-5 py-2.5 rounded-sm hover:bg-[color:var(--color-gin-sage-pale)] text-sm font-medium">
             Ir a Farmacia
           </Link>
-          <Link
-            href="/skincare"
-            className="inline-flex items-center gap-2 border border-[color:var(--color-ilm-nude-dark)] text-[color:var(--color-ilm-nude-dark)] px-5 py-2.5 rounded-sm hover:bg-[color:var(--color-ilm-nude-pale)] transition-colors text-sm font-medium"
-          >
+          <Link href="/skincare" className="inline-flex items-center gap-2 border border-[color:var(--color-ilm-nude-dark)] text-[color:var(--color-ilm-nude-dark)] px-5 py-2.5 rounded-sm hover:bg-[color:var(--color-ilm-nude-pale)] text-sm font-medium">
             Ir a Skincare
           </Link>
         </div>
+      </section>
+    );
+  }
+
+  /* --------------------------- REDIRECTING STATE -------------------------- */
+  if (step === "redirecting" && redirecting) {
+    return (
+      <section className="mx-auto max-w-3xl px-6 md:px-10 py-24 text-center">
+        <div className="inline-flex h-14 w-14 rounded-full border-2 border-[color:var(--color-ohm-wine)] border-t-transparent animate-spin" />
+        <h2 className="mt-6 text-2xl md:text-3xl font-[family-name:var(--font-display)] text-[color:var(--color-ohm-ink)]">
+          Redirigiendo a Mercado Pago…
+        </h2>
+        <p className="mt-3 text-[color:var(--color-ohm-ink-soft)]">
+          Vas a completar tu compra en el ambiente seguro de Mercado Pago.
+        </p>
       </section>
     );
   }
@@ -197,8 +209,14 @@ export function CartPageClient() {
         <Stepper step={step} />
       </header>
 
+      {error && (
+        <div className="mb-6 rounded-sm border border-red-300 bg-red-50 px-4 py-3 text-sm text-red-700">
+          {error}
+        </div>
+      )}
+
       <div className="grid gap-10 lg:grid-cols-[1fr_380px]">
-        {/* LEFT COLUMN */}
+        {/* LEFT */}
         <div className="space-y-6">
           {step === "cart" && (
             <CartItemsList items={items} setQty={setQty} remove={remove} />
@@ -210,30 +228,32 @@ export function CartPageClient() {
               onChange={setShipping}
               onSubmit={handleShippingSubmit}
               onBack={() => setStep("cart")}
+              loading={quotesLoading}
             />
           )}
 
-          {step === "payment" && (
-            <PaymentStep
-              value={payment}
-              onChange={setPayment}
-              onSubmit={handlePaymentSubmit}
+          {step === "method" && quotes && (
+            <ShippingMethodStep
+              quotes={quotes}
+              selectedId={selectedQuoteId}
+              onSelect={setSelectedQuoteId}
               onBack={() => setStep("shipping")}
+              onProceed={handleProceedToMP}
+              redirecting={redirecting}
             />
           )}
         </div>
 
-        {/* RIGHT COLUMN — SUMMARY */}
+        {/* RIGHT */}
         <aside className="lg:sticky lg:top-24 h-fit">
           <OrderSummary
             items={items}
             subtotal={subtotal}
             shippingCost={shippingCost}
+            shippingLabel={selectedQuote?.label}
             total={total}
             freeThreshold={FREE_SHIPPING_THRESHOLD}
-            onContinue={() => {
-              if (step === "cart") setStep("shipping");
-            }}
+            onContinue={() => setStep("shipping")}
             showContinue={step === "cart"}
           />
         </aside>
@@ -250,11 +270,11 @@ function Stepper({ step }: { step: Step }) {
   const steps: { id: Step; label: string }[] = [
     { id: "cart", label: "Carrito" },
     { id: "shipping", label: "Envío" },
-    { id: "payment", label: "Pago" },
+    { id: "method", label: "Método" },
   ];
   const activeIdx = steps.findIndex((s) => s.id === step);
   return (
-    <ol className="mt-6 flex items-center gap-3 text-xs md:text-sm">
+    <ol className="mt-6 flex items-center gap-3 text-xs md:text-sm flex-wrap">
       {steps.map((s, idx) => {
         const isActive = idx === activeIdx;
         const isDone = idx < activeIdx;
@@ -272,11 +292,11 @@ function Stepper({ step }: { step: Step }) {
               {idx + 1}
             </span>
             <span
-              className={`${
+              className={
                 isActive
                   ? "text-[color:var(--color-ohm-ink)] font-semibold"
                   : "text-[color:var(--color-ohm-ink-soft)]"
-              }`}
+              }
             >
               {s.label}
             </span>
@@ -304,13 +324,7 @@ function CartItemsList({
       {items.map(({ product, qty }) => (
         <li key={product.id} className="p-4 md:p-6 flex gap-4">
           <div className="relative h-24 w-20 md:h-28 md:w-24 flex-shrink-0 bg-[color:var(--color-ohm-gold-pale)]/30 rounded-sm overflow-hidden">
-            <Image
-              src={product.image}
-              alt={product.name}
-              fill
-              sizes="96px"
-              className="object-cover"
-            />
+            <Image src={product.image} alt={product.name} fill sizes="96px" className="object-cover" />
           </div>
           <div className="flex-1 flex flex-col gap-1 min-w-0">
             <p className="text-[10px] uppercase tracking-[0.18em] text-[color:var(--color-ohm-ink-soft)]">
@@ -319,37 +333,21 @@ function CartItemsList({
             <h3 className="text-base md:text-lg font-[family-name:var(--font-display)] text-[color:var(--color-ohm-ink)] leading-snug">
               {product.name}
             </h3>
-            <p className="text-xs md:text-sm text-[color:var(--color-ohm-ink-soft)] line-clamp-2">
-              {product.tagline}
-            </p>
+            <p className="text-xs md:text-sm text-[color:var(--color-ohm-ink-soft)] line-clamp-2">{product.tagline}</p>
             <div className="mt-2 flex flex-wrap items-center justify-between gap-3">
               <div className="inline-flex items-center border border-[color:var(--color-ohm-line)] rounded-sm">
-                <button
-                  type="button"
-                  onClick={() => setQty(product.id, qty - 1)}
-                  aria-label="Disminuir cantidad"
-                  className="h-8 w-8 inline-flex items-center justify-center hover:bg-[color:var(--color-ohm-cream)]"
-                >
+                <button type="button" onClick={() => setQty(product.id, qty - 1)} aria-label="Disminuir cantidad" className="h-8 w-8 inline-flex items-center justify-center hover:bg-[color:var(--color-ohm-cream)]">
                   <Minus size={14} strokeWidth={1.75} />
                 </button>
                 <span className="w-8 text-center text-sm font-medium">{qty}</span>
-                <button
-                  type="button"
-                  onClick={() => setQty(product.id, qty + 1)}
-                  aria-label="Aumentar cantidad"
-                  className="h-8 w-8 inline-flex items-center justify-center hover:bg-[color:var(--color-ohm-cream)]"
-                >
+                <button type="button" onClick={() => setQty(product.id, qty + 1)} aria-label="Aumentar cantidad" className="h-8 w-8 inline-flex items-center justify-center hover:bg-[color:var(--color-ohm-cream)]">
                   <Plus size={14} strokeWidth={1.75} />
                 </button>
               </div>
               <span className="text-base font-medium text-[color:var(--color-ohm-wine)]">
                 {formatMXN(product.price * qty)}
               </span>
-              <button
-                type="button"
-                onClick={() => remove(product.id)}
-                className="text-xs text-[color:var(--color-ohm-ink-soft)] hover:text-[color:var(--color-ohm-wine)] inline-flex items-center gap-1"
-              >
+              <button type="button" onClick={() => remove(product.id)} className="text-xs text-[color:var(--color-ohm-ink-soft)] hover:text-[color:var(--color-ohm-wine)] inline-flex items-center gap-1">
                 <Trash2 size={14} strokeWidth={1.5} />
                 Quitar
               </button>
@@ -365,6 +363,7 @@ function OrderSummary({
   items,
   subtotal,
   shippingCost,
+  shippingLabel,
   total,
   freeThreshold,
   onContinue,
@@ -373,6 +372,7 @@ function OrderSummary({
   items: ReturnType<typeof useCart>["items"];
   subtotal: number;
   shippingCost: number;
+  shippingLabel?: string;
   total: number;
   freeThreshold: number;
   onContinue: () => void;
@@ -401,8 +401,8 @@ function OrderSummary({
       <div className="mt-5 pt-5 border-t border-[color:var(--color-ohm-line)] space-y-2 text-sm">
         <Row label="Subtotal" value={formatMXN(subtotal)} />
         <Row
-          label="Envío"
-          value={shippingCost === 0 ? "Gratis" : formatMXN(shippingCost)}
+          label={shippingLabel ? `Envío (${shippingLabel})` : "Envío"}
+          value={shippingCost === 0 && shippingLabel ? "Gratis" : shippingCost > 0 ? formatMXN(shippingCost) : "Por calcular"}
         />
         {remainingForFree > 0 && items.length > 0 && (
           <p className="text-xs text-[color:var(--color-ohm-ink-soft)] italic">
@@ -419,18 +419,14 @@ function OrderSummary({
       </div>
 
       {showContinue && (
-        <button
-          type="button"
-          onClick={onContinue}
-          className="mt-6 w-full inline-flex items-center justify-center gap-2 bg-[color:var(--color-ohm-wine)] text-[color:var(--color-ohm-cream)] px-5 py-3 rounded-sm hover:bg-[color:var(--color-ohm-wine-dark)] transition-colors text-sm font-semibold uppercase tracking-[0.12em]"
-        >
+        <button type="button" onClick={onContinue} className="mt-6 w-full inline-flex items-center justify-center gap-2 bg-[color:var(--color-ohm-wine)] text-[color:var(--color-ohm-cream)] px-5 py-3 rounded-sm hover:bg-[color:var(--color-ohm-wine-dark)] transition-colors text-sm font-semibold uppercase tracking-[0.12em]">
           Continuar compra
         </button>
       )}
 
       <p className="mt-4 inline-flex items-center gap-1.5 text-xs text-[color:var(--color-ohm-ink-soft)]">
         <Lock size={12} strokeWidth={1.75} />
-        Pago seguro · Simulación demo
+        Pago seguro vía Mercado Pago
       </p>
     </div>
   );
@@ -438,9 +434,9 @@ function OrderSummary({
 
 function Row({ label, value }: { label: string; value: string }) {
   return (
-    <div className="flex justify-between">
-      <span className="text-[color:var(--color-ohm-ink-soft)]">{label}</span>
-      <span className="text-[color:var(--color-ohm-ink)] font-medium">{value}</span>
+    <div className="flex justify-between gap-3">
+      <span className="text-[color:var(--color-ohm-ink-soft)] flex-1 truncate">{label}</span>
+      <span className="text-[color:var(--color-ohm-ink)] font-medium whitespace-nowrap">{value}</span>
     </div>
   );
 }
@@ -450,20 +446,19 @@ function ShippingStep({
   onChange,
   onSubmit,
   onBack,
+  loading,
 }: {
-  value: ShippingForm;
-  onChange: (v: ShippingForm) => void;
+  value: ShippingAddress;
+  onChange: (v: ShippingAddress) => void;
   onSubmit: (e: FormEvent<HTMLFormElement>) => void;
   onBack: () => void;
+  loading: boolean;
 }) {
-  const update = <K extends keyof ShippingForm>(key: K, v: ShippingForm[K]) =>
+  const update = <K extends keyof ShippingAddress>(key: K, v: ShippingAddress[K]) =>
     onChange({ ...value, [key]: v });
 
   return (
-    <form
-      onSubmit={onSubmit}
-      className="border border-[color:var(--color-ohm-line)] bg-[color:var(--color-ohm-paper)] rounded-sm p-6 md:p-8 space-y-5"
-    >
+    <form onSubmit={onSubmit} className="border border-[color:var(--color-ohm-line)] bg-[color:var(--color-ohm-paper)] rounded-sm p-6 md:p-8 space-y-5">
       <h2 className="text-xl md:text-2xl font-[family-name:var(--font-display)] text-[color:var(--color-ohm-ink)]">
         Datos de envío
       </h2>
@@ -471,116 +466,120 @@ function ShippingStep({
         <Field label="Nombre completo" required value={value.fullName} onChange={(v) => update("fullName", v)} />
         <Field label="Correo" type="email" required value={value.email} onChange={(v) => update("email", v)} />
         <Field label="Teléfono" type="tel" required value={value.phone} onChange={(v) => update("phone", v)} />
-        <Field label="Código postal" required value={value.zip} onChange={(v) => update("zip", v)} />
-        <Field
-          label="Calle y número"
-          required
-          className="md:col-span-2"
-          value={value.street}
-          onChange={(v) => update("street", v)}
-        />
-        <Field label="Ciudad" required value={value.city} onChange={(v) => update("city", v)} />
+        <Field label="Código postal" required inputMode="numeric" value={value.zip} onChange={(v) => update("zip", v.replace(/\D/g, "").slice(0, 5))} />
+        <Field label="Calle y número" required className="md:col-span-2" value={value.street} onChange={(v) => update("street", v)} />
+        <Field label="Ciudad / Alcaldía" required value={value.city} onChange={(v) => update("city", v)} />
         <Field label="Estado" required value={value.state} onChange={(v) => update("state", v)} />
       </div>
       <div className="flex flex-wrap gap-3 justify-between items-center pt-3">
-        <button
-          type="button"
-          onClick={onBack}
-          className="text-sm text-[color:var(--color-ohm-ink-soft)] hover:text-[color:var(--color-ohm-wine)] underline underline-offset-4"
-        >
+        <button type="button" onClick={onBack} className="text-sm text-[color:var(--color-ohm-ink-soft)] hover:text-[color:var(--color-ohm-wine)] underline underline-offset-4">
           ← Volver al carrito
         </button>
-        <button
-          type="submit"
-          className="inline-flex items-center justify-center gap-2 bg-[color:var(--color-ohm-wine)] text-[color:var(--color-ohm-cream)] px-6 py-3 rounded-sm hover:bg-[color:var(--color-ohm-wine-dark)] transition-colors text-sm font-semibold uppercase tracking-[0.12em]"
-        >
-          Continuar al pago
+        <button type="submit" disabled={loading} className="inline-flex items-center justify-center gap-2 bg-[color:var(--color-ohm-wine)] text-[color:var(--color-ohm-cream)] px-6 py-3 rounded-sm hover:bg-[color:var(--color-ohm-wine-dark)] transition-colors text-sm font-semibold uppercase tracking-[0.12em] disabled:opacity-60 disabled:cursor-not-allowed">
+          {loading ? "Cotizando…" : "Cotizar envío"}
         </button>
       </div>
     </form>
   );
 }
 
-function PaymentStep({
-  value,
-  onChange,
-  onSubmit,
+function ShippingMethodStep({
+  quotes,
+  selectedId,
+  onSelect,
   onBack,
+  onProceed,
+  redirecting,
 }: {
-  value: PaymentForm;
-  onChange: (v: PaymentForm) => void;
-  onSubmit: (e: FormEvent<HTMLFormElement>) => void;
+  quotes: ShippingQuote[];
+  selectedId: string | null;
+  onSelect: (id: string) => void;
   onBack: () => void;
+  onProceed: () => void;
+  redirecting: boolean;
 }) {
   return (
-    <form
-      onSubmit={onSubmit}
-      className="border border-[color:var(--color-ohm-line)] bg-[color:var(--color-ohm-paper)] rounded-sm p-6 md:p-8 space-y-5"
-    >
-      <div className="flex items-start justify-between">
-        <h2 className="text-xl md:text-2xl font-[family-name:var(--font-display)] text-[color:var(--color-ohm-ink)]">
-          Método de pago
-        </h2>
-        <span className="inline-flex items-center gap-1.5 text-xs text-[color:var(--color-ohm-ink-soft)]">
-          <Lock size={12} strokeWidth={1.75} />
-          Conexión cifrada
-        </span>
-      </div>
+    <div className="border border-[color:var(--color-ohm-line)] bg-[color:var(--color-ohm-paper)] rounded-sm p-6 md:p-8 space-y-5">
+      <h2 className="text-xl md:text-2xl font-[family-name:var(--font-display)] text-[color:var(--color-ohm-ink)]">
+        Elige tu método de envío
+      </h2>
 
-      <p className="text-xs text-[color:var(--color-ohm-ink-soft)] italic bg-[color:var(--color-ohm-gold-pale)]/40 border border-[color:var(--color-ohm-gold)]/30 rounded-sm p-3">
-        Esto es una simulación. Puedes usar cualquier número de 16 dígitos — no se procesará ningún cargo real.
-      </p>
+      <ul className="space-y-3">
+        {quotes.map((q) => {
+          const active = q.id === selectedId;
+          return (
+            <li key={q.id}>
+              <label
+                className={`flex items-start gap-4 p-4 border-2 rounded-sm cursor-pointer transition-colors ${
+                  active
+                    ? "border-[color:var(--color-ohm-wine)] bg-[color:var(--color-ohm-gold-pale)]/30"
+                    : "border-[color:var(--color-ohm-line)] hover:border-[color:var(--color-ohm-wine-soft)]"
+                }`}
+              >
+                <input
+                  type="radio"
+                  name="ship-method"
+                  value={q.id}
+                  checked={active}
+                  onChange={() => onSelect(q.id)}
+                  className="mt-1 accent-[color:var(--color-ohm-wine)]"
+                />
+                <div className="flex-1">
+                  <div className="flex items-center justify-between gap-3 flex-wrap">
+                    <span className="text-sm md:text-base font-medium text-[color:var(--color-ohm-ink)] inline-flex items-center gap-2">
+                      <Truck size={16} strokeWidth={1.5} className="text-[color:var(--color-ohm-wine)]" />
+                      {q.label}
+                      {q.recommended && (
+                        <span className="text-[10px] uppercase tracking-[0.18em] bg-[color:var(--color-ohm-wine)] text-[color:var(--color-ohm-cream)] px-2 py-0.5 rounded-full">
+                          Recomendado
+                        </span>
+                      )}
+                    </span>
+                    <span className="text-base font-semibold text-[color:var(--color-ohm-wine)]">
+                      {q.price === 0 ? "Gratis" : formatMXN(q.price)}
+                    </span>
+                  </div>
+                  <p className="mt-1 text-xs text-[color:var(--color-ohm-ink-soft)]">
+                    Tiempo estimado: {q.eta} · Empresa: {q.carrier === "99minutos" ? "99 minutos" : q.carrier}
+                  </p>
+                </div>
+              </label>
+            </li>
+          );
+        })}
+      </ul>
 
-      <Field
-        label="Nombre en la tarjeta"
-        required
-        value={value.cardName}
-        onChange={(v) => onChange({ ...value, cardName: v })}
-      />
-      <Field
-        label="Número de tarjeta"
-        required
-        inputMode="numeric"
-        placeholder="0000 0000 0000 0000"
-        value={value.cardNumber}
-        onChange={(v) => onChange({ ...value, cardNumber: maskCard(v) })}
-      />
-      <div className="grid grid-cols-2 gap-4">
-        <Field
-          label="Vencimiento"
-          required
-          inputMode="numeric"
-          placeholder="MM/AA"
-          value={value.expiry}
-          onChange={(v) => onChange({ ...value, expiry: maskExpiry(v) })}
-        />
-        <Field
-          label="CVC"
-          required
-          inputMode="numeric"
-          placeholder="123"
-          value={value.cvc}
-          onChange={(v) => onChange({ ...value, cvc: v.replace(/\D/g, "").slice(0, 4) })}
-        />
+      {/* Trust strip */}
+      <div className="grid grid-cols-3 gap-3 pt-3 border-t border-[color:var(--color-ohm-line)] text-center">
+        <div className="flex flex-col items-center gap-1">
+          <Lock size={16} strokeWidth={1.5} className="text-[color:var(--color-ohm-ink-soft)]" />
+          <span className="text-[10px] text-[color:var(--color-ohm-ink-soft)]">Pago seguro Mercado Pago</span>
+        </div>
+        <div className="flex flex-col items-center gap-1">
+          <Truck size={16} strokeWidth={1.5} className="text-[color:var(--color-ohm-ink-soft)]" />
+          <span className="text-[10px] text-[color:var(--color-ohm-ink-soft)]">Tracking incluido</span>
+        </div>
+        <div className="flex flex-col items-center gap-1">
+          <RefreshCw size={16} strokeWidth={1.5} className="text-[color:var(--color-ohm-ink-soft)]" />
+          <span className="text-[10px] text-[color:var(--color-ohm-ink-soft)]">Devolución 30 días</span>
+        </div>
       </div>
 
       <div className="flex flex-wrap gap-3 justify-between items-center pt-3">
+        <button type="button" onClick={onBack} className="text-sm text-[color:var(--color-ohm-ink-soft)] hover:text-[color:var(--color-ohm-wine)] underline underline-offset-4">
+          ← Editar dirección
+        </button>
         <button
           type="button"
-          onClick={onBack}
-          className="text-sm text-[color:var(--color-ohm-ink-soft)] hover:text-[color:var(--color-ohm-wine)] underline underline-offset-4"
-        >
-          ← Editar envío
-        </button>
-        <button
-          type="submit"
-          className="inline-flex items-center justify-center gap-2 bg-[color:var(--color-ohm-wine)] text-[color:var(--color-ohm-cream)] px-6 py-3 rounded-sm hover:bg-[color:var(--color-ohm-wine-dark)] transition-colors text-sm font-semibold uppercase tracking-[0.12em]"
+          onClick={onProceed}
+          disabled={!selectedId || redirecting}
+          className="inline-flex items-center justify-center gap-2 bg-[color:var(--color-ohm-wine)] text-[color:var(--color-ohm-cream)] px-6 py-3 rounded-sm hover:bg-[color:var(--color-ohm-wine-dark)] transition-colors text-sm font-semibold uppercase tracking-[0.12em] disabled:opacity-60 disabled:cursor-not-allowed"
         >
           <Lock size={14} strokeWidth={1.75} />
-          Pagar ahora
+          {redirecting ? "Redirigiendo…" : "Pagar con Mercado Pago"}
         </button>
       </div>
-    </form>
+    </div>
   );
 }
 
