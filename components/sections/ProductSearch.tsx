@@ -19,6 +19,8 @@ type Props = {
   /** Tono del UI: "sage" para farmacia, "wine" para distribución, etc. */
   accent?: "sage" | "wine" | "ilm";
   placeholder?: string;
+  /** Versión compacta — útil para el header (input más pequeño). */
+  compact?: boolean;
 };
 
 const MAX_RESULTS = 3;
@@ -64,6 +66,7 @@ export function ProductSearch({
   detailBase = "/farmacia",
   accent = "sage",
   placeholder = "Busca un producto, principio activo o categoría…",
+  compact = false,
 }: Props) {
   const [query, setQuery] = useState("");
   const [open, setOpen] = useState(false);
@@ -142,12 +145,16 @@ export function ProductSearch({
   }[accent];
 
   return (
-    <div ref={containerRef} className="relative w-full max-w-2xl">
+    <div ref={containerRef} className={`relative w-full ${compact ? "" : "max-w-2xl"}`}>
       {/* INPUT */}
       <div
-        className={`flex items-center gap-3 px-4 py-3 md:py-3.5 border-2 border-[color:var(--color-ohm-line)] bg-[color:var(--color-ohm-paper)] rounded-sm transition-colors focus-within:ring-2 ${accentStyles.ring}`}
+        className={`flex items-center gap-2 md:gap-3 ${
+          compact ? "px-3 py-2" : "px-4 py-3 md:py-3.5"
+        } border ${
+          compact ? "border" : "border-2"
+        } border-[color:var(--color-ohm-line)] bg-[color:var(--color-ohm-paper)] rounded-sm transition-colors focus-within:ring-2 ${accentStyles.ring}`}
       >
-        <Search size={18} strokeWidth={1.75} className="text-[color:var(--color-ohm-ink-soft)] shrink-0" />
+        <Search size={compact ? 16 : 18} strokeWidth={1.75} className="text-[color:var(--color-ohm-ink-soft)] shrink-0" />
         <input
           ref={inputRef}
           type="text"
@@ -162,7 +169,9 @@ export function ProductSearch({
           aria-label="Buscar productos"
           aria-autocomplete="list"
           aria-expanded={open && results.length > 0}
-          className="flex-1 bg-transparent outline-none text-sm md:text-base text-[color:var(--color-ohm-ink)] placeholder:text-[color:var(--color-ohm-ink-soft)]"
+          className={`flex-1 bg-transparent outline-none ${
+            compact ? "text-sm" : "text-sm md:text-base"
+          } text-[color:var(--color-ohm-ink)] placeholder:text-[color:var(--color-ohm-ink-soft)]`}
         />
         {query && (
           <button
