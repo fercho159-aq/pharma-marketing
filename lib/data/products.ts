@@ -490,6 +490,28 @@ export const farmaciaProducts: Product[] = [
   },
   /* ---- Colesterol / Estatinas ---- */
   {
+    id: "f39",
+    name: "Dylaxyl — Atorvastatina 20 mg",
+    tagline: "Hipolipemiante · 20 tabletas · Son's",
+    description:
+      "Atorvastatina 20 mg, estatina de intensidad moderada-alta para reducción de LDL colesterol y triglicéridos. Ideal para iniciar tratamiento o pacientes con buena respuesta a dosis menor. Caja con 20 tabletas. Son's.",
+    price: 290,
+    image: "/products/farmacia/dylaxyl-atorvastatina-20mg.png",
+    images: ["/products/farmacia/dylaxyl-atorvastatina-20mg.png"],
+    category: "Colesterol",
+    benefits: [
+      "Reduce LDL hasta 43% (dosis 20 mg)",
+      "Excelente para inicio de tratamiento",
+      "Tomarse de noche para mayor eficacia",
+      "Genérico Son's con registro sanitario",
+    ],
+    howToUse: "1 tableta de 20 mg al día, preferentemente en la noche, con o sin alimentos. Acompañar de dieta baja en grasas.",
+    ingredients: "Atorvastatina cálcica equivalente a Atorvastatina 20 mg · Excipientes farmacéuticos.",
+    reviews: [
+      { author: "Beatriz O.", rating: 5, date: "2025-12", text: "Dosis perfecta para iniciar. Mi LDL se controló sin efectos secundarios.", verified: true },
+    ],
+  },
+  {
     id: "f14",
     name: "Dylaxyl — Atorvastatina 40 mg",
     tagline: "Hipolipemiante · 20 tabletas · Son's",

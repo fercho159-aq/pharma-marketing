@@ -2,6 +2,7 @@ import Image from "next/image";
 import { HeaderNav } from "@/components/sections/HeaderNav";
 import { Footer } from "@/components/sections/Footer";
 import { ProductCard } from "@/components/sections/ProductCard";
+import { ProductSearch } from "@/components/sections/ProductSearch";
 import { BenefitsBand } from "@/components/sections/BenefitsBand";
 import { Button } from "@/components/ui/Button";
 import { SectionHeader } from "@/components/ui/SectionHeader";
@@ -57,22 +58,40 @@ export default function FarmaciaPage() {
           </div>
         </section>
 
-        {/* CATEGORÍAS */}
-        <section className="px-6 md:px-10 py-16 border-b border-[color:var(--color-ohm-line)]">
-          <div className="mx-auto max-w-7xl flex flex-col gap-6">
-            <p className="text-[11px] uppercase tracking-[0.28em] font-medium text-[color:var(--color-gin-sage-dark)]">
-              Explora por categoría
-            </p>
-            <div className="flex flex-wrap gap-3">
-              {farmaciaCategories.map((c) => (
-                <a
-                  key={c}
-                  href="#productos"
-                  className="px-5 py-2 text-sm border border-[color:var(--color-gin-sage-soft)] text-[color:var(--color-ohm-ink)] rounded-sm hover:bg-[color:var(--color-gin-sage-pale)] hover:border-[color:var(--color-gin-sage-dark)] transition-colors"
-                >
-                  {c}
-                </a>
-              ))}
+        {/* BUSCADOR + CATEGORÍAS */}
+        <section className="px-6 md:px-10 py-12 md:py-16 border-b border-[color:var(--color-ohm-line)] bg-[color:var(--color-ohm-paper)]">
+          <div className="mx-auto max-w-7xl flex flex-col gap-8">
+            <div className="flex flex-col gap-3 max-w-2xl">
+              <p className="text-[11px] uppercase tracking-[0.28em] font-medium text-[color:var(--color-gin-sage-dark)]">
+                Encuentra tu medicamento
+              </p>
+              <h2 className="text-2xl md:text-3xl font-[family-name:var(--font-display)] text-[color:var(--color-ohm-ink)] leading-tight">
+                ¿Qué estás buscando hoy?
+              </h2>
+            </div>
+
+            <ProductSearch
+              products={farmaciaProducts}
+              detailBase="/farmacia"
+              accent="sage"
+              placeholder="Busca por nombre, principio activo o categoría…"
+            />
+
+            <div className="flex flex-col gap-3 pt-2">
+              <p className="text-[11px] uppercase tracking-[0.28em] font-medium text-[color:var(--color-gin-sage-dark)]">
+                O explora por categoría
+              </p>
+              <div className="flex flex-wrap gap-2 md:gap-3">
+                {farmaciaCategories.map((c) => (
+                  <a
+                    key={c}
+                    href="#productos"
+                    className="px-4 md:px-5 py-2 text-xs md:text-sm border border-[color:var(--color-gin-sage-soft)] text-[color:var(--color-ohm-ink)] rounded-sm hover:bg-[color:var(--color-gin-sage-pale)] hover:border-[color:var(--color-gin-sage-dark)] transition-colors"
+                  >
+                    {c}
+                  </a>
+                ))}
+              </div>
             </div>
           </div>
         </section>
