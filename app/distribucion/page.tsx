@@ -3,8 +3,8 @@ import { HeaderNav } from "@/components/sections/HeaderNav";
 import { Footer } from "@/components/sections/Footer";
 import { Button } from "@/components/ui/Button";
 import { SectionHeader } from "@/components/ui/SectionHeader";
-import { Input, TextArea } from "@/components/ui/Input";
 import { Divider } from "@/components/ui/Divider";
+import { ContactForm } from "./ContactForm";
 import { distribucionCategories } from "@/lib/data/products";
 import { Truck, ShieldCheck, HandCoins, HeartHandshake, MapPin, MessageCircle } from "lucide-react";
 import { Reveal } from "@/components/motion/Reveal";
@@ -132,29 +132,7 @@ export default function DistribucionPage() {
               </address>
             </div>
 
-            <form className="flex flex-col gap-6 border border-[color:var(--color-ohm-line)] bg-[color:var(--color-ohm-paper)] rounded-sm p-8 md:p-10">
-              <div className="grid sm:grid-cols-2 gap-5">
-                <Input name="nombre" label="Nombre" required />
-                <Input name="empresa" label="Farmacia / Empresa" required />
-              </div>
-              <div className="grid sm:grid-cols-2 gap-5">
-                <Input name="email" type="email" label="Email" required />
-                <Input name="telefono" type="tel" label="Teléfono" autoComplete="tel" required />
-              </div>
-              <TextArea
-                name="mensaje"
-                label="Mensaje"
-                helperText="Cuéntanos volumen aproximado, línea que te interesa, ubicación de tus puntos."
-                required
-              />
-              <Button type="submit" variant="wine" size="lg" className="mt-2 self-start">
-                Enviar solicitud
-              </Button>
-              <p className="text-xs text-[color:var(--color-ohm-ink-soft)]">
-                {/* TODO: aviso de privacidad real */}
-                Al enviar aceptas nuestro aviso de privacidad. Tus datos se usan solo para esta gestión comercial.
-              </p>
-            </form>
+            <ContactForm />
           </div>
         </section>
       </main>
