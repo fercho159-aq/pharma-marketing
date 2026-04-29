@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { fontDisplay, fontBody } from "@/lib/fonts";
 import { CartProvider } from "@/lib/cart/CartContext";
+import { WhatsAppFloat } from "@/components/ui/WhatsAppFloat";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -23,7 +24,10 @@ export default function RootLayout({
   return (
     <html lang="es" className={`${fontDisplay.variable} ${fontBody.variable}`}>
       <body>
-        <CartProvider>{children}</CartProvider>
+        <CartProvider>
+          {children}
+          <WhatsAppFloat />
+        </CartProvider>
       </body>
     </html>
   );

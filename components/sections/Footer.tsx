@@ -22,7 +22,7 @@ function FacebookIcon({ size = 18 }: { size?: number }) {
 }
 
 const ADDRESS = "Av. Tláhuac 2772, Santa Ana Poniente, Tláhuac, CDMX";
-const WA_NUMBER = "5215555555555"; // TODO: Sheccid
+const WA_NUMBER = "5215575538801";
 
 export function Footer({ tone = "grupo" }: { tone?: "grupo" | "sage" | "nude" }) {
   const accentLabel =
@@ -49,7 +49,7 @@ export function Footer({ tone = "grupo" }: { tone?: "grupo" | "sage" | "nude" })
               <p className="flex items-center gap-3">
                 <Phone size={16} strokeWidth={1.5} className="text-[color:var(--color-ohm-gold)]" />
                 <a href={`https://wa.me/${WA_NUMBER}`} className="hover:text-[color:var(--color-ohm-wine)]">
-                  WhatsApp Business <span className="text-xs">(número por confirmar)</span>
+                  +52 1 55 7553 8801
                 </a>
               </p>
             </address>

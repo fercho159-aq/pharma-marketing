@@ -39,7 +39,7 @@ export function HeaderSearch() {
   return (
     <>
       {/* DESKTOP — input inline */}
-      <div className="hidden lg:block flex-1 max-w-md mx-4">
+      <div className="hidden lg:block w-[200px] xl:w-[240px] mx-3">
         <CompactSearch />
       </div>
 

@@ -37,7 +37,7 @@ export default function DistribucionPage() {
               </p>
               <div className="flex flex-wrap gap-4 mt-2">
                 <Button href="#contacto" variant="wine" size="lg">Solicitar contacto</Button>
-                <Button href="https://wa.me/5215555555555" variant="gold-ghost" size="lg">
+                <Button href="https://wa.me/5215575538801" variant="gold-ghost" size="lg">
                   <MessageCircle size={16} strokeWidth={1.5} className="mr-2" />
                   WhatsApp directo
                 </Button>
@@ -127,7 +127,7 @@ export default function DistribucionPage() {
                 </p>
                 <p className="flex items-start gap-3">
                   <MessageCircle size={16} strokeWidth={1.5} className="mt-0.5 text-[color:var(--color-ohm-gold)]" />
-                  WhatsApp Business — número por confirmar.
+                  +52 1 55 7553 8801
                 </p>
               </address>
             </div>

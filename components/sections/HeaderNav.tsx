@@ -13,7 +13,7 @@ const navLinks = [
   { href: "/nosotros", label: "Nosotros" },
 ];
 
-const WA_NUMBER = "5215555555555"; // TODO: número real de Sheccid
+const WA_NUMBER = "5215575538801";
 
 export function HeaderNav({ variant = "grupo" }: { variant?: NavVariant }) {
   const isFarmacia = variant === "farmacia";
@@ -50,9 +50,6 @@ export function HeaderNav({ variant = "grupo" }: { variant?: NavVariant }) {
           height={logoHeight}
         />
 
-        {/* Buscador (lg: inline | <lg: botón ícono) */}
-        <HeaderSearch />
-
         <nav className="hidden md:flex lg:hidden xl:flex items-center gap-6 xl:gap-8" aria-label="Primaria">
           {navLinks.map((l) => (
             <Link
@@ -64,6 +61,9 @@ export function HeaderNav({ variant = "grupo" }: { variant?: NavVariant }) {
             </Link>
           ))}
         </nav>
+
+        {/* Buscador (lg: inline | <lg: botón ícono) */}
+        <HeaderSearch />
 
         <div className="flex items-center gap-2 sm:gap-3 shrink-0">
           <a

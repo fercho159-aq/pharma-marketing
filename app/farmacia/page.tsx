@@ -39,7 +39,7 @@ export default function FarmaciaPage() {
               </p>
               <div className="flex flex-wrap gap-4 mt-2">
                 <Button href="#productos" variant="sage" size="lg">Ver productos</Button>
-                <Button href="https://wa.me/5215555555555" variant="outline" size="lg">
+                <Button href="https://wa.me/5215575538801" variant="outline" size="lg">
                   <MessageCircle size={16} strokeWidth={1.5} className="mr-2" />
                   Pedir por WhatsApp
                 </Button>
@@ -149,7 +149,7 @@ export default function FarmaciaPage() {
               <p className="text-lg leading-snug text-[color:var(--color-ohm-ink)] font-[family-name:var(--font-display)]">
                 ¿Buscas un medicamento específico? Mándanos la receta por WhatsApp.
               </p>
-              <Button href="https://wa.me/5215555555555" variant="sage" size="lg" className="self-start">
+              <Button href="https://wa.me/5215575538801" variant="sage" size="lg" className="self-start">
                 <MessageCircle size={16} strokeWidth={1.5} className="mr-2" />
                 Abrir WhatsApp
               </Button>
